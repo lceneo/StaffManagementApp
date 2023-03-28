@@ -1,0 +1,15 @@
+
+  <form class="form" [formGroup] = "form">
+    <div>
+      <mat-form-field class="form__inputField">
+        <input matInput type="email" placeholder="Почта" [formControlName]="'email'" appFocus>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="form__inputField">
+        <input matInput type="password" placeholder="Пароль" [formControlName]="'password'">
+      </mat-form-field>
+    </div>
+    <button mat-flat-button class="form__signInBtn" [disabled] = "form.invalid" color="primary" (click)="signIn()">Войти</button>
+    <a class="form__link" (click) = "redirectToSignUp()">Регистрация</a>
+  </form>
