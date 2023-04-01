@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import {IUser} from "../interfaces/IUser";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import firebase from 'firebase/compat/app';
+import {IAuthService} from "../interfaces/IAuthService";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
+@Injectable()
+export class AuthService implements  IAuthService{
 
   constructor(private fbAuth: AngularFireAuth) { }
 
@@ -16,5 +15,13 @@ export class AuthService {
 
   public register(user: IUser): Promise<firebase.auth.UserCredential>{
    return this.fbAuth.createUserWithEmailAndPassword(user.email, user.password);
+  }
+
+  public saveSessionInfo(sessionInfo: firebase.auth.UserCredential){
+    localStorage.setItem("session", JSON.stringify(sessionInfo));
+  }
+
+  public isAuthorized(){
+    return localStorage.getItem("session") !== null;
   }
 }
