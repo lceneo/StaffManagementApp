@@ -1,9 +1,8 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
-import {AuthService} from "../../../shared/services/auth.service";
 import {FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {Router} from "@angular/router";
-import {IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
+import {IAuthService, IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -26,7 +25,7 @@ export class RegistrationComponent implements AfterViewInit{
   constructor
   (
     @Inject(IAuthServiceToken)
-    private authS: AuthService,
+    private authS: IAuthService,
     private router: Router
   ) {}
 
@@ -40,8 +39,10 @@ export class RegistrationComponent implements AfterViewInit{
   public signUp(): void{
     const firstPasswordValue: string = this.form.controls['password'].value;
     const secondPasswordValue: string = this.form.controls['repeatPassword'].value;
-    if(firstPasswordValue !== secondPasswordValue)
+    if(firstPasswordValue !== secondPasswordValue) {
+      this.incorrectAccountError$.next(new Error("Пароли не совпадают"));
       return;
+    }
     this.authS.register({
       email: this.form.controls['email'].value,
       password: firstPasswordValue

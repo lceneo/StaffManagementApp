@@ -10,7 +10,6 @@ import {ErrorHandlerModule} from "../error-handler/error-handler.module";
 import {FocusDirective} from "./directives/focus.directive";
 
 
-
 @NgModule({
   declarations: [
     LoginComponent,
@@ -23,7 +22,7 @@ import {FocusDirective} from "./directives/focus.directive";
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
+    MatButtonModule
   ],
   exports:[
     LoginComponent,

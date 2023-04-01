@@ -1,9 +1,8 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {AuthService} from "../../../shared/services/auth.service";
 import {Router} from "@angular/router";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
-import {IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
+import {IAuthService, IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -26,7 +25,7 @@ export class LoginComponent implements AfterViewInit{
   constructor
   (
     @Inject(IAuthServiceToken)
-    private authS: AuthService,
+    private authS: IAuthService,
     private router: Router,
   ) {}
 

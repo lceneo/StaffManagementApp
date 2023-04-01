@@ -1,11 +1,24 @@
 import {inject} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, RouterStateSnapshot} from "@angular/router";
 import {IAuthServiceToken} from "../interfaces/IAuthService";
 
-export const authGuard = () => {
-  if(!inject(IAuthServiceToken).isAuthorized()){
-    inject(Router).navigate(["login"]);
-    return false;
+export const authGuard = (router: Router, activatedRoute: RouterStateSnapshot) => {
+  const path = activatedRoute.url;
+  const isAuthorized = inject(IAuthServiceToken).isAuthorized();
+  switch (path){
+    case "/login":
+    case "/registration":
+      if(isAuthorized){
+        inject(Router).navigate(["users"]);
+        return false;
+      }
+      return true;
+    default:
+      if(!isAuthorized) {
+        inject(Router).navigate(["login"]);
+        return false;
+      }
+      return true;
   }
-  return true;
 }
+
