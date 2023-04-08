@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {inject, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,10 +8,14 @@ import { environment } from "./enviroments/environment";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FocusDirective } from './authorization/directives/focus.directive';
 import {AuthorizationModule} from "./authorization/authorization.module";
-import {AuthService} from "./shared/services/auth.service";
+import {FbAuthService} from "./shared/services/fb-auth.service";
 import {IAuthServiceToken} from "./shared/interfaces/IAuthService";
 import {MainContentModule} from "./main-content/main-content.module";
 import {ErrorHandlerModule} from "./error-handler/error-handler.module";
+import {Firestore} from "@angular/fire/firestore";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {IUserDbServiceToken} from "./shared/interfaces/IUserDbService";
+import {FbDbService, UsersToken} from "./shared/services/fb-db.service";
 
 @NgModule({
   declarations: [
@@ -19,18 +23,19 @@ import {ErrorHandlerModule} from "./error-handler/error-handler.module";
   ],
   imports: [
     AuthorizationModule,
-    MainContentModule,
     ErrorHandlerModule,
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule.enablePersistence(),
     HttpClientModule,
+    MainContentModule,
     BrowserAnimationsModule
   ],
   providers: [
     {
       provide: IAuthServiceToken,
-      useClass: AuthService
+      useClass: FbAuthService
     }
   ],
   exports: [

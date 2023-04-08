@@ -1,1 +1,12 @@
-<p>users-list works!</p>
+<input id = "name">
+<input id = "surname">
+<input id = "patronic">
+<input id = "age">
+<button (click) = "addUser()">Добавить пользователя</button>
+
+<div *ngFor="let user of users$ | async">
+  <p>{{user.name}}</p>
+  <p>{{user.surname}}</p>
+  <p>{{user.patronic}}</p>
+  <p>{{user.age}}</p>
+</div>
