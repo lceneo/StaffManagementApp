@@ -12,7 +12,6 @@ export const fbDataTransformationFn = () => {
   return fbDbService.getAllUsers$()
     .pipe(map(res => {
       return res.map(e => {
-        console.log(res, e, e.payload, e.payload.doc, e.payload.doc.data())
         const data = e.payload.doc.data()
         data.id = e.payload.doc.id;
         return data;

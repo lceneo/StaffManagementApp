@@ -2,24 +2,27 @@
 
 <form #myForm = "ngForm" class="form" [formGroup] = "form">
   <div>
-    <mat-form-field class="form__inputField">
-      <input matInput type="email" placeholder="Почта" [formControlName]="'email'" appFocus>
+    <mat-form-field class="form__inputWrapper">
+      <img class="form__icon" src="../../../../assets/img/email-icon.svg" width="22px" height="22px">
+      <input class = "form__input" matInput type="email" placeholder="Почта" [formControlName]="'email'" appFocus>
     </mat-form-field>
     <ng-container *ngIf="form.controls['email'].invalid && form.controls['email'].value.length > 0">
       <app-error-handler [errors]="form.controls['email'].errors"></app-error-handler>
     </ng-container>
   </div>
   <div>
-    <mat-form-field  class="form__inputField">
-      <input matInput type="password" placeholder="Пароль" [formControlName]="'password'">
+    <mat-form-field  class="form__inputWrapper">
+      <img class="form__icon" src="../../../../assets/img/password-icon.svg" width="22px" height="22px">
+      <input class = "form__input" matInput type="password" placeholder="Пароль" [formControlName]="'password'">
     </mat-form-field>
     <ng-container *ngIf="form.controls['password'].invalid && form.controls['password'].value.length > 0">
       <app-error-handler [errors]="form.controls['password'].errors"></app-error-handler>
     </ng-container>
   </div>
   <div>
-    <mat-form-field  class="form__inputField">
-      <input matInput type="password" placeholder="Пароль" [formControlName]="'repeatPassword'">
+    <mat-form-field  class="form__inputWrapper">
+      <img class="form__icon" src="../../../../assets/img/password-icon.svg" width="22px" height="22px">
+      <input class = "form__input" matInput type="password" placeholder="Повторите пароль" [formControlName]="'repeatPassword'">
     </mat-form-field>
     <ng-container *ngIf="form.controls['repeatPassword'].invalid && form.controls['repeatPassword'].value.length > 0">
       <app-error-handler [errors]="form.controls['repeatPassword'].errors"></app-error-handler>

@@ -1,12 +1,17 @@
-<input id = "name">
-<input id = "surname">
-<input id = "patronic">
-<input id = "age">
-<button (click) = "addUser()">Добавить пользователя</button>
-
-<div *ngFor="let user of users$ | async">
-  <p>{{user.name}}</p>
-  <p>{{user.surname}}</p>
-  <p>{{user.patronic}}</p>
-  <p>{{user.age}}</p>
+<div class="wrapper">
+  <mat-form-field class = "name__input">
+    <input #nameInput matInput>
+  </mat-form-field>
+  <ul *ngIf="users$ | async | searchFilter: nameFilterValue as filteredUsers">
+      <li *ngFor="let user of filteredUsers | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
+        <p>{{user.surname}}</p>
+        <p>{{user.name}}</p>
+        <p>{{user.patronic}}</p>
+        <p>{{user.age}}</p>
+      </li>
+  </ul>
+  <pagination-controls (pageChange)="currentPage = $event" previousLabel = "" nextLabel= "">
+  </pagination-controls>
 </div>
+
+

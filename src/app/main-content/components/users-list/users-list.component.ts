@@ -1,7 +1,17 @@
-import {Component, inject, Inject, OnInit} from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  Inject,
+  Input,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {IUser} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
-import {map, Observable} from "rxjs";
+import {debounceTime, distinct, distinctUntilChanged, fromEvent, map, Observable} from "rxjs";
 import {UsersToken} from "../../../shared/services/fb-db.service";
 
 @Component({
@@ -9,27 +19,26 @@ import {UsersToken} from "../../../shared/services/fb-db.service";
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss']
 })
-export class UsersListComponent {
+export class UsersListComponent implements AfterViewInit{
 
   public users$: Observable<IUser[]> = inject(UsersToken);
+  public nameFilterValue: string = "";
+  public currentPage = 1;
+  public itemsPerPage = 5;
+  @ViewChild("nameInput") nameInputFilter!: ElementRef;
 
   constructor(
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService
   ) {}
 
-  public addUser(){
-    const name1 = (document.getElementById("name") as HTMLInputElement).value;
-    const surname1= (document.getElementById("surname") as HTMLInputElement).value;
-    const patronic1 = (document.getElementById("patronic") as HTMLInputElement).value;
-    const age1 = parseInt((document.getElementById("age") as HTMLInputElement).value);
-    this.fbDb.addUser({
-      name: name1,
-      surname: surname1,
-      patronic: patronic1,
-      age: age1
-    })
-  }
+  ngAfterViewInit(): void {
+      fromEvent<InputEvent>(this.nameInputFilter.nativeElement, "input")
+        .pipe(
+          debounceTime(250)
+        )
+        .subscribe(v => this.nameFilterValue = this.nameInputFilter.nativeElement.value);
+    }
 
   public updateUser(){
 

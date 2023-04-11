@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {IAuthService, IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
 import {BehaviorSubject} from "rxjs";
-import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 @Component({
   selector: 'app-login',

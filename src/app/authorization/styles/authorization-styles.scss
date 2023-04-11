@@ -4,9 +4,18 @@
     width: 400px;
     margin: auto;
     margin-top: 300px;
-  &__inputField{
+  &__inputWrapper{
      width: 100%;
+    position: relative;
    }
+  &__input{
+    width: 90%;
+    margin-left: 40px;
+  }
+  &__icon{
+    position: absolute;
+    top: 17px;
+  }
   &__signInBtn{
      align-self: center;
      width: 100%;
@@ -18,8 +27,5 @@
   &:hover{
      cursor: pointer;
    }
-  }
-  .ng-invalid{
-
   }
 }

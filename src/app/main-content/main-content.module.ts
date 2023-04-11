@@ -1,18 +1,23 @@
-import {inject, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UsersListComponent} from "./components/users-list/users-list.component";
 import {IUserDbServiceToken} from "../shared/interfaces/IUserDbService";
 import {fbDataTransformationFn, FbDbService, UsersToken} from "../shared/services/fb-db.service";
-import {map} from "rxjs";
+import {NgxPaginationModule} from "ngx-pagination";
+import {MatInputModule} from "@angular/material/input";
+import { SearchFilterPipe } from './pipes/search-filter.pipe';
 
 
 
 @NgModule({
   declarations: [
-    UsersListComponent
+    UsersListComponent,
+    SearchFilterPipe
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    NgxPaginationModule,
+    MatInputModule
   ],
   providers: [
     {
