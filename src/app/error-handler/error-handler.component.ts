@@ -23,16 +23,19 @@ export class ErrorHandlerComponent implements OnInit{
       switch (err){
         case "required":
           this.errorText = "Обязательное поле"
-          return;
+          break;
         case "minlength":
           this.errorText = `Минимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`
-          return;
+          break;
         case "maxlength":
           this.errorText = `Максимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`
-          return;
+          break;
         case "emailValidator" :
           this.errorText = "Некорректный формат email"
-          return;
+          break;
+        case "passwordsMismatch" :
+          this.errorText = "Пароли не совпадают"
+          break;
       }
     }
   }
