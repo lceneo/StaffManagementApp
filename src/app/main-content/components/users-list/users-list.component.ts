@@ -45,6 +45,7 @@ export class UsersListComponent implements AfterViewInit{
   public openCreateUserDialog(){
      this.dialog.open(AddUserPopUpComponent,
        {
+         autoFocus: false
        } );
   }
 
