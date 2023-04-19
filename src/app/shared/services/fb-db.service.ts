@@ -19,8 +19,9 @@ export class FbDbService implements IUserDbService{
   constructor(private afs: AngularFirestore) { }
 
   public addUser(user: IUser){
-    user.id = this.afs.createId();
-    return this.afs.collection<IUser>('/Users').add(user);
+    const newDocRef = this.afs.collection<IUser>('/Users').doc().ref;
+    user.id = newDocRef.id;
+    return newDocRef.set(user);
   }
 
   public getAllUsers$(){
