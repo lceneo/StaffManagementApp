@@ -6,18 +6,29 @@ import {fbDataTransformationFn, FbDbService, UsersToken} from "../shared/service
 import {NgxPaginationModule} from "ngx-pagination";
 import {MatInputModule} from "@angular/material/input";
 import { SearchFilterPipe } from './pipes/search-filter.pipe';
-
+import { AddUserPopUpComponent } from './components/add-user-pop-up/add-user-pop-up.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import { UserInfoComponent } from './components/user-info/user-info.component';
 
 
 @NgModule({
   declarations: [
     UsersListComponent,
-    SearchFilterPipe
+    SearchFilterPipe,
+    AddUserPopUpComponent,
+    UserInfoComponent
   ],
   imports: [
     CommonModule,
     NgxPaginationModule,
-    MatInputModule
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule
   ],
   providers: [
     {

@@ -1,0 +1,46 @@
+<form [formGroup] = form>
+  <button class="form__close" mat-icon-button (click) = "closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <div>
+    <mat-form-field class="form__inputWrapper">
+      <input class = "form__input" matInput type="email" placeholder="Имя" [formControlName]="'name'">
+    </mat-form-field>
+  </div>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Фамилия" [formControlName]="'surname'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Отчество" [formControlName]="'patronic'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Возраст" [formControlName]="'age'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Дата рождения" [formControlName]="'birthdayDate'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Образование" [formControlName]="'education'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Проект" [formControlName]="'projectName'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Должность" [formControlName]="'companyPosition'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Зарплата" [formControlName]="'salary'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="День собеседования" [formControlName]="'interviewDate'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="Первый рабочий день" [formControlName]="'firstWorkDayDate'">
+  </mat-form-field>
+  <mat-form-field class="form__inputWrapper">
+    <input class = "form__input" matInput type="email" placeholder="История зарплаты" [formControlName]="'salaryHistory'">
+  </mat-form-field>
+  <div>
+    <button class="form__btn" mat-flat-button color="primary" (click) = "createUser()">Сохранить пользователя</button>
+  </div>
+</form>

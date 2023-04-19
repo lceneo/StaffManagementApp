@@ -1,18 +1,18 @@
 import {
-  AfterViewChecked,
   AfterViewInit,
   Component,
   ElementRef,
   inject,
   Inject,
-  Input,
-  OnInit,
   ViewChild
 } from '@angular/core';
 import {IUser} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
-import {debounceTime, distinct, distinctUntilChanged, fromEvent, map, Observable} from "rxjs";
+import {debounceTime, fromEvent, Observable} from "rxjs";
 import {UsersToken} from "../../../shared/services/fb-db.service";
+import {MatDialog} from "@angular/material/dialog";
+import {AddUserPopUpComponent} from "../add-user-pop-up/add-user-pop-up.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-users-list',
@@ -29,7 +29,9 @@ export class UsersListComponent implements AfterViewInit{
 
   constructor(
     @Inject(IUserDbServiceToken)
-    private fbDb: IUserDbService
+    private fbDb: IUserDbService,
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -40,11 +42,16 @@ export class UsersListComponent implements AfterViewInit{
         .subscribe(v => this.nameFilterValue = this.nameInputFilter.nativeElement.value);
     }
 
-  public updateUser(){
-
+  public openCreateUserDialog(){
+     this.dialog.open(AddUserPopUpComponent,
+       {
+       } );
   }
 
+  openUserDetailedInfo(userId: string){
+    this.router.navigate(["users", userId])
+  }
   public deleteUser(user: IUser){
-    this.fbDb.deleteStudent(user);
+    this.fbDb.deleteUser(user);
   }
 }

@@ -6,16 +6,12 @@ import { AngularFireModule } from  '@angular/fire/compat'
 import { HttpClientModule } from "@angular/common/http";
 import { environment } from "./enviroments/environment";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FocusDirective } from './authorization/directives/focus.directive';
 import {AuthorizationModule} from "./authorization/authorization.module";
 import {FbAuthService} from "./shared/services/fb-auth.service";
 import {IAuthServiceToken} from "./shared/interfaces/IAuthService";
 import {MainContentModule} from "./main-content/main-content.module";
 import {ErrorHandlerModule} from "./error-handler/error-handler.module";
-import {Firestore} from "@angular/fire/firestore";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
-import {IUserDbServiceToken} from "./shared/interfaces/IUserDbService";
-import {FbDbService, UsersToken} from "./shared/services/fb-db.service";
 
 @NgModule({
   declarations: [
@@ -39,7 +35,6 @@ import {FbDbService, UsersToken} from "./shared/services/fb-db.service";
     }
   ],
   exports: [
-    FocusDirective
   ],
   bootstrap: [AppComponent]
 })

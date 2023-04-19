@@ -2,8 +2,10 @@
   <mat-form-field class = "name__input">
     <input #nameInput matInput>
   </mat-form-field>
+  <button (click) = "openCreateUserDialog()">Создать пользователя</button>
   <ul *ngIf="users$ | async | searchFilter: nameFilterValue as filteredUsers">
-      <li *ngFor="let user of filteredUsers | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
+      <li *ngFor="let user of filteredUsers | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}"
+      (click) = "openUserDetailedInfo(user.id!)">
         <p>{{user.surname}}</p>
         <p>{{user.name}}</p>
         <p>{{user.patronic}}</p>

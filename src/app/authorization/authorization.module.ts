@@ -7,7 +7,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {ErrorHandlerModule} from "../error-handler/error-handler.module";
-import {FocusDirective} from "./directives/focus.directive";
+import {FocusDirective} from "../shared/directives/focus.directive";
+import {AppModule} from "../app.module";
 
 
 @NgModule({
@@ -26,8 +27,7 @@ import {FocusDirective} from "./directives/focus.directive";
   ],
   exports:[
     LoginComponent,
-    RegistrationComponent,
-    FocusDirective
+    RegistrationComponent
   ]
 })
 export class AuthorizationModule { }
