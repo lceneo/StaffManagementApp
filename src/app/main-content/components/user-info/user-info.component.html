@@ -1,1 +1,25 @@
-<p>{{user | json}}</p>
+<div class="wrapper" *ngLet="user$ | async as user">
+  <ng-container *ngLet="onEdit$ | async as onEdit">
+    <ng-container *ngIf="!onEdit; else editFieldsTemplate">
+      <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <p *ngFor="let prop of userPropertyKeys">{{user[prop]}}</p>
+    </ng-container>
+    <ng-template #editFieldsTemplate>
+      <button class="editBtn" mat-icon-button (click) = "restoreFieldsChanges(user)">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <form [formGroup]="form">
+        <textarea [placeholder]="prop" *ngFor="let prop of userPropertyKeys" [formControlName]="prop"></textarea>
+        <button mat-flat-button color="primary" (click) = "updateUserInfo(user)">
+          Сохранить
+        </button>
+      </form>
+    </ng-template>
+  </ng-container>
+</div>
+

@@ -9,7 +9,7 @@ export const UsersToken = new InjectionToken<Observable<IUser[]>>("Error while f
 export const fbDataTransformationFn = () => {
   const fbDbService = inject(IUserDbServiceToken);
   return fbDbService.getAllUsers$()
-    .pipe(map(res => res.map(e => e.payload.doc.data())))
+    .pipe(map(res => res.map(e => e.payload.doc.data())));
 }
 
 @Injectable()
@@ -40,8 +40,7 @@ export class FbDbService implements IUserDbService{
     return this.afs.doc(`/Users/${user.id}`).delete();
   }
 
-  public async updateUser(user: IUser){
-    await this.deleteUser(user);
-    await this.addUser(user);
+  public updateUser(user: IUser, newData: Partial<IUser>){
+     return this.afs.doc(`/Users/${user.id}`).update(newData);
   }
 }

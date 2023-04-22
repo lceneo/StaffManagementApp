@@ -10,5 +10,5 @@ export interface IUserDbService{
   getAllUsers$: () => Observable<DocumentChangeAction<IUser>[]>;
   getUserById$: (id: string) => Observable<DocumentChangeAction<IUser>[]>;
   deleteUser: (user: IUser) => Promise<void>;
-  updateUser: (user: IUser) => Promise<void>;
+  updateUser: (user: IUser, newData: Partial<IUser>) => Promise<void>;
 }

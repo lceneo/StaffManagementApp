@@ -1,45 +1,33 @@
 <form [formGroup] = form>
+  <ng-template #controlTemplate let-controlName let-type = "type" let-translation = "translation">
+    <div>
+      <mat-form-field class="form__inputWrapper">
+        <input class = "form__input" matInput [type]="type" [placeholder]="translation" [formControlName]="controlName">
+      </mat-form-field>
+    </div>
+  </ng-template>
   <button class="form__close" mat-icon-button (click) = "closeDialog()">
     <mat-icon>close</mat-icon>
   </button>
-  <div>
-    <mat-form-field class="form__inputWrapper">
-      <input class = "form__input" matInput type="email" placeholder="Имя" [formControlName]="'name'">
-    </mat-form-field>
+  <div style="display: flex">
+    <div style="margin-right: 40px">
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'name', type: 'text', translation: 'Имя'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'surname', type: 'text', translation: 'Фамилия'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'patronic', type: 'text', translation: 'Отчество'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'age', type: 'text', translation: 'Возраст'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'birthdayDate', type: 'date', translation: 'Дата рождения'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'gender', type: 'text', translation: 'Пол'}"></ng-container>
+    <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'education', type: 'text', translation: 'Образование'}"></ng-container>
+    </div>
+    <div>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'projectName', type: 'text', translation: 'Проект'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'companyPosition', type: 'text', translation: 'Должность'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'salary', type: 'text', translation: 'Зарплата'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'interviewDate', type: 'date', translation: 'День собеседования'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'firstWorkDayDate', type: 'date', translation: 'Первый рабочий день'}"></ng-container>
+      <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'salaryHistory', type: 'text', translation: 'История зарплаты'}"></ng-container>
+    </div>
   </div>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Фамилия" [formControlName]="'surname'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Отчество" [formControlName]="'patronic'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Возраст" [formControlName]="'age'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Дата рождения" [formControlName]="'birthdayDate'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Образование" [formControlName]="'education'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Проект" [formControlName]="'projectName'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Должность" [formControlName]="'companyPosition'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Зарплата" [formControlName]="'salary'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="День собеседования" [formControlName]="'interviewDate'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="Первый рабочий день" [formControlName]="'firstWorkDayDate'">
-  </mat-form-field>
-  <mat-form-field class="form__inputWrapper">
-    <input class = "form__input" matInput type="email" placeholder="История зарплаты" [formControlName]="'salaryHistory'">
-  </mat-form-field>
   <div>
     <button class="form__btn" mat-flat-button color="primary" (click) = "createUser()">Сохранить пользователя</button>
   </div>

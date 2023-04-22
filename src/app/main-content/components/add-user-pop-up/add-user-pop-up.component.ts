@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
@@ -6,7 +6,8 @@ import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IU
 @Component({
   selector: 'app-add-user-pop-up',
   templateUrl: './add-user-pop-up.component.html',
-  styleUrls: ['./add-user-pop-up.component.scss']
+  styleUrls: ['./add-user-pop-up.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddUserPopUpComponent {
   public form: FormGroup = new FormGroup({
@@ -15,6 +16,7 @@ export class AddUserPopUpComponent {
       patronic: new FormControl(""),
       age: new FormControl(""),
       birthdayDate: new FormControl(Date.now()),
+      gender: new FormControl(""),
       education: new FormControl(""),
       projectName: new FormControl(""),
       companyPosition: new FormControl(""),

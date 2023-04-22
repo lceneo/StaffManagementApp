@@ -1,8 +1,55 @@
 
-.wrapper{
+.users{
   padding: 0 30px;
+  width: 1200px;
+  margin: 0 auto;
+  &__addBtn{
+    position: absolute;
+    right: 290px;
+    top: -20px;
+  }
+  &__filter{
+    display: flex;
+    width: 20%;
+    flex-direction: column;
+    &-reset{
+      align-self: center;
+      padding: 0px;
+      margin: 0px;
+      font-size: 35px;
+    }
+  }
+  &__list{
+    list-style: none;
+    padding: 0px;
+  }
+  &__item{
+    width: 900px;
+    margin-bottom: 20px;
+  }
 }
-
+.wrapper{
+  position: relative;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
 .name__input{
   width: 100%;
+}
+
+:host ::ng-deep .ngx-pagination{
+  margin-left: 30% !important;
+}
+
+:host ::ng-deep .matCardContent{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  p{
+    font-size: 16px;
+    span{
+      font-weight: bold;
+    }
+  }
 }
