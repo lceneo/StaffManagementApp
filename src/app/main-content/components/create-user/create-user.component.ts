@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
@@ -7,7 +7,8 @@ import {Router} from "@angular/router";
 @Component({
   selector: 'app-create-user',
   templateUrl: './create-user.component.html',
-  styleUrls: ['./create-user.component.scss']
+  styleUrls: ['./create-user.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateUserComponent implements OnInit{
   public form: FormGroup = new FormGroup({
