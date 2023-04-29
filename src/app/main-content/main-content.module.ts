@@ -6,7 +6,6 @@ import {fbDataTransformationFn, FbDbService, UsersToken} from "../shared/service
 import {NgxPaginationModule} from "ngx-pagination";
 import {MatInputModule} from "@angular/material/input";
 import { SearchFilterPipe } from './pipes/search-filter.pipe';
-import { AddUserPopUpComponent } from './components/add-user-pop-up/add-user-pop-up.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatIconModule} from "@angular/material/icon";
@@ -30,7 +29,6 @@ import {MatNativeDateModule} from "@angular/material/core";
   declarations: [
     UsersListComponent,
     SearchFilterPipe,
-    AddUserPopUpComponent,
     UserInfoComponent,
     SearchFiltersComponent,
     CreateUserComponent
