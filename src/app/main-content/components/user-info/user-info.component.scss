@@ -1,16 +1,51 @@
 .wrapper{
   display: flex;
+  padding-top: 100px;
   width: 1200px;
   margin: 0 auto;
-  flex-direction: column;
+}
+
+.userInfo{
+  margin-left: 200px;
 }
 
 .editBtn{
   position: absolute;
+  top: 0px;
   right: 20px;
 }
 
 .returnBtn{
   position: absolute;
+  top: 0px;
   left: 20px;
+}
+
+.salaryInfo{
+  &__description{
+    display: flex;
+    align-items: flex-end;
+  }
+  &__items{
+    margin-left: 40px;
+  }
+  &__item{
+    display: flex;
+    p{
+      margin-right: 40px;
+    }
+  }
+}
+
+.salaryItem{
+  &__date{
+    margin-right: 30px;
+  }
+}
+
+p{
+  font-size: 16px;
+  span{
+    color: grey;
+  }
 }

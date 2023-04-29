@@ -10,7 +10,7 @@ export class FbAuthService implements  IAuthService{
   constructor(private fbAuth: AngularFireAuth) { }
 
   public login(credentials: IAuthCredentials): Promise<firebase.auth.UserCredential>{
-     return this.fbAuth.signInWithEmailAndPassword(credentials.email, credentials.password);
+    return this.fbAuth.signInWithEmailAndPassword(credentials.email, credentials.password);
   }
 
   public register(credentials: IAuthCredentials): Promise<firebase.auth.UserCredential>{
