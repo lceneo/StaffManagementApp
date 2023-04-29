@@ -1,0 +1,39 @@
+.form{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 130px;
+  width: 500px;
+  margin: 0 auto;
+  &__salaryHistory{
+    padding-left: 40px;
+  }
+  &__btn{
+    margin-top: 20px;
+    align-self: center;
+  }
+  &__addSalary{
+    position: absolute;
+    bottom: 133px;
+    left: 130px;
+  }
+  &__close{
+    position: absolute;
+    top: 0px;
+    left: -300px;
+  }
+}
+
+.salaryItem{
+  display: flex;
+  &__date{
+    margin-right: 30px;
+  }
+}
+
+.wrapper{
+  margin-left: -40px;
+  margin-top: -10px;
+  align-items: flex-end;
+  display: flex;
+}

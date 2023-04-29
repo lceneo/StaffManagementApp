@@ -1,16 +1,13 @@
 <section class="users">
-  <mat-form-field class = "name__input">
-    <input #nameInput matInput placeholder="Введите имя сотрудника">
-  </mat-form-field>
-  <div class="wrapper" *ngLet="filters$ | async as searchFilters">
-    <div class="users__info">
+  <div class="wrapper">
+    <div class="users__info" *ngLet="filters$ | async as searchFilters">
       <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()">
         <mat-icon>add</mat-icon>
       </button>
       <ul class="users__list" *ngLet="users$ | async | searchFilter: searchFilters  as filteredUsers">
           <li class="users__item" *ngFor="let user of filteredUsers
            | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
-            <mat-card class="users__card" (click) = "openUserDetailedInfo(user.id!)">
+            <mat-card class="users__card">
               <mat-card-header>
                 <mat-card-title-group>
                   <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>
@@ -26,39 +23,12 @@
                 </div>
                 <img class="users__img" mat-card-xl-image src="assets/img/temporary-user.PNG" alt="Employee photo">
               </mat-card-content>
+              <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">Перейти в профиль</a>
             </mat-card>
           </li>
       </ul>
     </div>
-  <div class="users__filter">
-    <label>Заработная плата</label>
-    <label>От {{searchFilters.salary.from}} До {{searchFilters.salary.to}}</label>
-    <mat-slider min="1000" max="1000000" step="1000" discrete >
-      <input [(ngModel)]="searchFilters.salary.from" matSliderStartThumb>
-      <input [(ngModel)]="searchFilters.salary.to" matSliderEndThumb>
-    </mat-slider>
-    <mat-form-field appearance="outline">
-      <mat-label>Должность</mat-label>
-      <mat-select [(ngModel)]="searchFilters.companyPosition">
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Пол</mat-label>
-      <mat-select [(ngModel)]="searchFilters.gender">
-        <mat-option [value]="'Не указан'">Не указан</mat-option>
-        <mat-option [value]="'Мужской'">Мужской</mat-option>
-        <mat-option [value]="'Женский'">Женский</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Проект</mat-label>
-      <mat-select>
-      </mat-select>
-    </mat-form-field>
-    <button [disabled] = "!filtersAreSet()" (click) = "resetFilters()" class = "users__filter-reset" mat-icon-button>
-      <mat-icon [inline]="true">settings_backup_restore</mat-icon>
-    </button>
-  </div>
+    <app-search-filters class="users__filters" (filters$)="filters$.next($event)"></app-search-filters>
   </div>
   <pagination-controls class="users__paginator" (pageChange)="currentPage = $event" previousLabel = "" nextLabel= "">
   </pagination-controls>

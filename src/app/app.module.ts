@@ -12,6 +12,7 @@ import {IAuthServiceToken} from "./shared/interfaces/IAuthService";
 import {MainContentModule} from "./main-content/main-content.module";
 import {ErrorHandlerModule} from "./error-handler/error-handler.module";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {FocusDirective} from "./shared/directives/focus.directive";
 
 @NgModule({
   declarations: [
@@ -28,14 +29,8 @@ import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
     MainContentModule,
     BrowserAnimationsModule
   ],
-  providers: [
-    {
-      provide: IAuthServiceToken,
-      useClass: FbAuthService
-    }
-  ],
-  exports: [
-  ],
+  providers: [],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

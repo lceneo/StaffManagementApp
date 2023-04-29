@@ -1,0 +1,32 @@
+<form class="filters" [formGroup]="filtersGroup">
+  <mat-form-field class = "name__input">
+    <input matInput placeholder="Введите имя сотрудника" formControlName = "name">
+  </mat-form-field>
+  <label>Заработная плата</label>
+  <label>От {{filtersGroup.controls.salaryFrom.value}} До {{filtersGroup.controls.salaryTo.value}}</label>
+  <mat-slider min="1000" max="1000000" step="1000" discrete >
+    <input formControlName="salaryFrom" matSliderStartThumb>
+    <input formControlName="salaryTo" matSliderEndThumb>
+  </mat-slider>
+  <mat-form-field appearance="outline">
+    <mat-label>Должность</mat-label>
+    <mat-select formControlName="companyPosition">
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Пол</mat-label>
+    <mat-select formControlName="gender">
+      <mat-option [value]="'Не указан'">Не указан</mat-option>
+      <mat-option [value]="'Мужской'">Мужской</mat-option>
+      <mat-option [value]="'Женский'">Женский</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Проект</mat-label>
+    <mat-select formControlName="projectName">
+    </mat-select>
+  </mat-form-field>
+  <button [disabled] = "!filtersAreSet()" (click) = "resetFilters()" class = "filters__reset" mat-icon-button>
+    <mat-icon [inline]="true">settings_backup_restore</mat-icon>
+  </button>
+</form>

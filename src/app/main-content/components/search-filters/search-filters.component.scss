@@ -1,0 +1,10 @@
+.filters{
+  display: flex;
+  flex-direction: column;
+  &__reset{
+    align-self: center;
+    padding: 0px;
+    margin: 0px;
+    font-size: 35px;
+  }
+}

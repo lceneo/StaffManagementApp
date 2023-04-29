@@ -6,10 +6,8 @@ export enum Gender {
 
 export interface IUserFilters{
   name: string;
-  salary: {
-    from: number,
-    to: number
-  };
+  salaryFrom: number;
+  salaryTo: number;
   companyPosition: string;
   gender: Gender;
   projectName: string;
@@ -29,5 +27,5 @@ export interface IUser {
   salary: number;
   interviewDate: Date;
   firstWorkDayDate: Date;
-  salaryHistory: number[];
+  salaryHistory: Array<{date: Date, salary: number}>;
 }

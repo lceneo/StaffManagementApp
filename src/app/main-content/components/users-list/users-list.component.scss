@@ -6,18 +6,7 @@
   &__addBtn{
     position: absolute;
     right: 290px;
-    top: -20px;
-  }
-  &__filter{
-    display: flex;
-    width: 20%;
-    flex-direction: column;
-    &-reset{
-      align-self: center;
-      padding: 0px;
-      margin: 0px;
-      font-size: 35px;
-    }
+    top: 72px;
   }
   &__list{
     list-style: none;
@@ -27,10 +16,24 @@
     width: 900px;
     margin-bottom: 20px;
   }
+  &__card{
+    padding-bottom: 10px;
+  }
+  &__link{
+   text-align: center;
+    color: grey;
+    cursor: pointer;
+    transition: 0.5s;
+    &:hover{
+      text-decoration: underline;
+      transform: scale(1.1);
+    }
+  }
 }
+
 .wrapper{
   position: relative;
-  padding-top: 20px;
+  padding-top: 110px;
   display: flex;
   justify-content: space-between;
 }
@@ -53,3 +56,14 @@
     }
   }
 }
+
+:host ::ng-deep .filters{
+  width: 150%;
+  .name__input{
+    position: absolute;
+    top: 10px;
+    width: 75%;
+    left: 0px;
+  }
+}
+

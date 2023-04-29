@@ -1,4 +1,4 @@
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UsersListComponent} from "./components/users-list/users-list.component";
 import {IUserDbServiceToken} from "../shared/interfaces/IUserDbService";
@@ -14,12 +14,17 @@ import {MatButtonModule} from "@angular/material/button";
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSelectModule} from "@angular/material/select";
-import {LetDirective} from "./directives/ngLet.directive";
 import {MatCardModule} from "@angular/material/card";
 import {registerLocaleData} from '@angular/common';
 import localeFr from '@angular/common/locales/fr'
+import {SearchFiltersComponent} from "./components/search-filters/search-filters.component";
+import {RouterModule} from "@angular/router";
+import {authGuard} from "../shared/guards/auth.guard";
+import {SharedModule} from "../shared/shared.module";
+import { CreateUserComponent } from './components/create-user/create-user.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
-registerLocaleData(localeFr);
 
 @NgModule({
   declarations: [
@@ -27,10 +32,12 @@ registerLocaleData(localeFr);
     SearchFilterPipe,
     AddUserPopUpComponent,
     UserInfoComponent,
-    LetDirective
+    SearchFiltersComponent,
+    CreateUserComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
     NgxPaginationModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -40,7 +47,14 @@ registerLocaleData(localeFr);
     MatSliderModule,
     MatSelectModule,
     FormsModule,
-    MatCardModule
+    MatCardModule,
+    RouterModule.forChild([
+      {path: "", component: UsersListComponent},
+      {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
+      {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
+    ]),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {
@@ -50,14 +64,8 @@ registerLocaleData(localeFr);
     {
       provide: UsersToken,
       useFactory: fbDataTransformationFn
-    },
-    {
-      provide: LOCALE_ID,
-      useValue: 'fr-Fr'
     }
   ],
-  exports:[
-    UsersListComponent
-  ]
+  exports:[]
 })
 export class MainContentModule { }

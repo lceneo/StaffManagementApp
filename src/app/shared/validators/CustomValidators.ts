@@ -1,4 +1,4 @@
-import {FormControl} from "@angular/forms";
+import {AbstractControl, FormControl} from "@angular/forms";
 
 export class CustomValidators{
 
@@ -17,5 +17,9 @@ export class CustomValidators{
     if(!regExpOnlyLowerSymbols.test(currentSplitState[0]) || !regExpOnlyLowerSymbols.test(currentSplitState[1]))
       return {emailValidator: true};
     return null;
+  }
+
+  public static spaceValidator(control: AbstractControl){
+    return !control.value.includes(" ") ? null : {spaceValidator: true};
   }
 }

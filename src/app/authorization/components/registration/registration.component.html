@@ -11,8 +11,12 @@
   <a class="form__link" (click) = "redirectToSignIn()">Вход</a>
   <ng-template #controlTemplate let-controlName let-type = "type" let-translation = "translation">
     <div>
-      <mat-form-field class="form__inputWrapper">
-        <img class="form__icon" src="../../../../assets/img/password-icon.svg" width="22px" height="21px">
+      <mat-form-field *ngIf="controlName === 'email'" class="form__inputWrapper">
+        <img class="form__icon" [src]="'/assets/img/' + type + '-icon.svg'" width="22px" height="21px">
+        <input class = "form__input" matInput [type]="type" [placeholder]="translation" [formControlName]="controlName" appFocus>
+      </mat-form-field>
+      <mat-form-field *ngIf="controlName !== 'email'" class="form__inputWrapper">
+        <img class="form__icon" [src]="'/assets/img/' + type + '-icon.svg'" width="22px" height="21px">
         <input class = "form__input" matInput [type]="type" [placeholder]="translation" [formControlName]="controlName">
       </mat-form-field>
       <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].value.length > 0">
