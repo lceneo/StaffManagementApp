@@ -89,7 +89,7 @@
               <mat-label>Укажите зарплату</mat-label>
               <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
             </mat-form-field>
-            <button mat-icon-button (click)="removeSalaryHistoryItem(index)">
+            <button mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryItemsArray.controls.length === 1">
               <mat-icon>delete</mat-icon>
             </button>
           </div>

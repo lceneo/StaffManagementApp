@@ -78,6 +78,14 @@ export class UserInfoComponent implements OnInit{
   public restoreFieldsChanges(user: IUser){
     this.onEdit$.next(false);
     for (const controlKey in this.form.controls){
+      if(controlKey === "salaryHistory"){
+        const lengthOfArr = this.salaryItemsArray.controls.length;
+        for (let i = 0; i < lengthOfArr; i++)
+          this.salaryItemsArray.removeAt(0);
+        user.salaryHistory.forEach(salaryItem =>
+          this.salaryItemsArray.insert(this.salaryItemsArray.controls.length, this.createSalaryFormFromItem(salaryItem)));
+        continue;
+      }
      this.form.get(controlKey)?.setValue(user[controlKey as keyof IUser]);
     }
   }
@@ -97,6 +105,13 @@ export class UserInfoComponent implements OnInit{
     return new FormGroup({
       date: new FormControl(new Date()),
       salary: new FormControl()
+    });
+  }
+
+  private createSalaryFormFromItem(salaryItem: {date: Date, salary: number}){
+    return new FormGroup({
+      date: new FormControl(salaryItem.date),
+      salary: new FormControl(salaryItem.salary)
     });
   }
 }
