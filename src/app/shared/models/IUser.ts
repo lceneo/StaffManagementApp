@@ -38,6 +38,7 @@ export interface IUser {
   firstWorkDayDate: Date;
   salaryHistory: Array<{date: Date, salary: number}>;
   lastPromotion?: Promotion;
+  img? : string;
 }
 
 export interface IUserFb {

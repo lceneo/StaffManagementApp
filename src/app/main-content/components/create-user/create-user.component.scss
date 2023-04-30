@@ -1,9 +1,9 @@
 .form{
-  display: flex;
-  flex-direction: column;
   position: relative;
+  display: flex;
+  justify-content: space-between;
   padding-top: 130px;
-  width: 500px;
+  width: 1000px;
   margin: 0 auto;
   &__salaryHistory{
     padding-left: 40px;

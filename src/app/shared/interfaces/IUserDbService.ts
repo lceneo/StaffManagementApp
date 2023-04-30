@@ -6,7 +6,7 @@ import {Observable} from "rxjs";
 export const IUserDbServiceToken = new InjectionToken<IUserDbService>("UserDb error");
 
 export interface IUserDbService{
-  addUser: (user: IUser) => Promise<void>;
+  addUser: (user: IUser, img?: File) => Promise<void>;
   getAllUsers$: () => Observable<DocumentChangeAction<IUserFb>[]>;
   getUserById$: (id: string) => Observable<DocumentChangeAction<IUserFb>[]>;
   deleteUser: (user: IUser) => Promise<void>;

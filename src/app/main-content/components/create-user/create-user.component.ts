@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
@@ -27,6 +27,8 @@ export class CreateUserComponent implements OnInit{
     salaryHistory: new FormArray([this.getEmptySalaryForm()])
   });
 
+  @ViewChild("imgInput") imgInput!: ElementRef;
+  @ViewChild("imgContainer") imgContainer?: ElementRef;
   public salaryHistoryForm!: FormArray;
   public userKeys: Array<{propName: string, type: string}> = [];
   constructor(
@@ -48,11 +50,12 @@ export class CreateUserComponent implements OnInit{
   }
 
   public createUser(){
-    this.fbDb.addUser({...this.form.value});
+    this.fbDb.addUser({...this.form.value}, this.imgInput.nativeElement.files[0]);
     this.returnToUsersList();
   }
 
   public addSalaryHistoryItem(){
+    console.log(this.imgInput.nativeElement.files[0])
     this.salaryHistoryForm.insert(0, this.getEmptySalaryForm());
   }
 
@@ -62,6 +65,10 @@ export class CreateUserComponent implements OnInit{
 
   public returnToUsersList(){
     this.router.navigate(["users"]);
+  }
+
+  public uploadImg(){
+    this.imgContainer!.nativeElement.src = URL.createObjectURL(this.imgInput.nativeElement.files[0]);
   }
 
   private getEmptySalaryForm(){

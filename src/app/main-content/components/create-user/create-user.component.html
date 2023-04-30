@@ -44,20 +44,26 @@
   <button class="form__close" mat-icon-button (click)="returnToUsersList()">
     <mat-icon>arrow_back</mat-icon>
   </button>
-  <ng-container *ngFor="let prop of userKeys">
-    <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName, type: prop.type}"></ng-container>
-  </ng-container>
-  <div class="form__salaryHistory">
-    <div class="wrapper">
-      <p class="form__salaryHistory-subtitle"><span>История зарплаты:</span></p>
-      <button mat-icon-button (click)="addSalaryHistoryItem()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-    <ng-container *ngFor="let salaryItem of salaryHistoryForm.controls; let i = index">
-      <ng-container *ngTemplateOutlet="salaryHistoryTemplate; context: {$implicit: salaryItem, index: i}">
-      </ng-container>
-    </ng-container>
+  <div>
+      <img #imgContainer width="300px" height="300px">
+      <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg">
   </div>
+  <div style="display: flex; flex-direction: column">
+      <ng-container *ngFor="let prop of userKeys">
+        <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName, type: prop.type}"></ng-container>
+      </ng-container>
+      <div class="form__salaryHistory">
+        <div class="wrapper">
+          <p class="form__salaryHistory-subtitle"><span>История зарплаты:</span></p>
+          <button mat-icon-button (click)="addSalaryHistoryItem()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <ng-container *ngFor="let salaryItem of salaryHistoryForm.controls; let i = index">
+          <ng-container *ngTemplateOutlet="salaryHistoryTemplate; context: {$implicit: salaryItem, index: i}">
+          </ng-container>
+        </ng-container>
+      </div>
     <button class="form__btn" mat-flat-button color="primary" (click) = "createUser()" [disabled] = "form.invalid">Сохранить пользователя</button>
+  </div>
 </form>

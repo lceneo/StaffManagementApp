@@ -24,7 +24,7 @@
                   <p><span>Пол:</span> {{user.gender}}</p>
                   <p><span>Заработная плата:</span> {{user.salary | currency: "RUB" }}</p>
                 </div>
-                <img class="users__img" mat-card-xl-image src="assets/img/temporary-user.PNG" alt="Employee photo">
+                <img class="users__img" mat-card-xl-image [src]="user.img ?? 'assets/img/temporary-user.PNG'" alt="Employee photo">
               </mat-card-content>
               <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">Перейти в профиль</a>
             </mat-card>

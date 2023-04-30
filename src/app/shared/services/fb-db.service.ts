@@ -3,6 +3,9 @@ import {AngularFirestore, CollectionReference, Query} from "@angular/fire/compat
 import {IUser, IUserFb, Promotion} from "../models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../interfaces/IUserDbService";
 import {map, Observable} from "rxjs";
+import firebase from "firebase/compat/app";
+// import "firebase/storage"
+import 'firebase/compat/storage'
 
 export const UsersToken = new InjectionToken<Observable<IUser[]>>("Error while fetching users");
 
@@ -37,9 +40,17 @@ export class FbDbService implements IUserDbService{
   public usersCollectionPath?: string;
   constructor(private afs: AngularFirestore) { }
 
-  public addUser(user: IUser){
+  public addUser(user: IUser, img?: File){
     const newDocRef = this.afs.collection<IUser>('/Users').doc().ref;
     user.id = newDocRef.id;
+    if(img){
+      const imgRef = firebase.storage().ref(`images${user.id}`);
+      const imgPushTask = imgRef.put(img);
+      return imgPushTask.then( v =>
+       v.ref.getDownloadURL().then(url => user.img = url)
+         .then(() => newDocRef.set(user))
+      );
+    }
     return newDocRef.set(user);
   }
 

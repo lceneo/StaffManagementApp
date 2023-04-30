@@ -1,5 +1,5 @@
 <div class="wrapper" *ngLet="user$ | async as user">
-  <img src="assets/img/temporary-user.PNG" height="300px" width="300px">
+  <img [src]="user.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
     <ng-container *ngIf="!onEdit; else editFieldsTemplate">
       <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()">
