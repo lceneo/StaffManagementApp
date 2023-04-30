@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
-import {IUser} from "../../../shared/models/IUser";
+import {IUser, IUserFb} from "../../../shared/models/IUser";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, map, mergeMap, Observable, tap} from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
@@ -46,7 +46,7 @@ export class UserInfoComponent implements OnInit{
       return;
     this.isFirstIteration = false;
     Object.keys(user).forEach((key) => {
-      if(key === "id" || key === "salaryHistory" || key === "lastPromotion")
+      if(key === "id" || key === "salaryHistory" || key === "lastPromotion" || key === "fired" || key === "img")
         return;
       let type = "text";
       const value = user[key as keyof IUser];
@@ -62,20 +62,23 @@ export class UserInfoComponent implements OnInit{
     this.salaryItemsArray = new FormArray(salaryHistoryControls);
     this.form.addControl("salaryHistory", this.salaryItemsArray);
   }
-  public updateUserInfo(user: IUser){
-    this.fbDb.updateUser(user, {...this.form.value})
+  public updateUserInfo(user: IUser, value: Partial<IUser>){
+    this.fbDb.updateUser(user, {...value})
       .then(() => this.onEdit$.next(false));
   }
+
+  public fireUser(user: IUser){
+    this.updateUserInfo(user, {fired: true});
+  }
+
   public makeUserFieldsEditable(){
       this.onEdit$.next(true);
   }
 
   public restoreFieldsChanges(user: IUser){
-    let userWithoutID = {...user};
-    delete userWithoutID.id;
     this.onEdit$.next(false);
     for (const controlKey in this.form.controls){
-     this.form.setValue(userWithoutID);
+     this.form.get(controlKey)?.setValue(user[controlKey as keyof IUser]);
     }
   }
 

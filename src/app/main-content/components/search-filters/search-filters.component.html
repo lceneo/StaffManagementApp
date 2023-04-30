@@ -26,6 +26,13 @@
     <mat-select formControlName="projectName">
     </mat-select>
   </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Статус сотрудника</mat-label>
+    <mat-select formControlName="fired">
+      <mat-option [value]="false">Действующий</mat-option>
+      <mat-option [value]="true">Уволен</mat-option>
+    </mat-select>
+  </mat-form-field>
   <button [disabled] = "!filtersAreSet()" (click) = "resetFilters()" class = "filters__reset" mat-icon-button>
     <mat-icon [inline]="true">settings_backup_restore</mat-icon>
   </button>

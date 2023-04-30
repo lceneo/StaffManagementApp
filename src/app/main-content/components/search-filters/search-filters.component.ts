@@ -19,7 +19,8 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
     salaryTo: new FormControl(1000000),
     companyPosition: new FormControl(""),
     gender: new FormControl(Gender.Undefined),
-    projectName: new FormControl("")
+    projectName: new FormControl(""),
+    fired: new FormControl(false)
   });
 
   @Output() public filters$ = new BehaviorSubject<IUserFilters>(JSON.parse(JSON.stringify(this.filtersGroup.value)));

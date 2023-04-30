@@ -14,7 +14,7 @@ export class CreateUserComponent implements OnInit{
   public form: FormGroup = new FormGroup({
     name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
-    patronic: new FormControl("",  CustomValidators.onlyLettersValidator),
+    patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
     age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
@@ -50,7 +50,7 @@ export class CreateUserComponent implements OnInit{
   }
 
   public createUser(){
-    this.fbDb.addUser({...this.form.value}, this.imgInput.nativeElement.files[0]);
+    this.fbDb.addUser({...this.form.value, fired: false}, this.imgInput.nativeElement.files[0]);
     this.returnToUsersList();
   }
 

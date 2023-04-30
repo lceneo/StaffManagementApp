@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Inject, } from '@angular/core';
 import { IUser, IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {UsersToken} from "../../../shared/services/fb-db.service";
+import {BehaviorSubject} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 
@@ -17,7 +16,7 @@ export class UsersListComponent {
   public users$: BehaviorSubject<IUser[]> = inject(FbEntitiesService).users$;
   public currentPage = 1;
   public itemsPerPage = 5;
-  public filters$ = new Subject<IUserFilters>();
+  public filters$ = new BehaviorSubject<IUserFilters>(null as unknown as IUserFilters);
 
   constructor(
     @Inject(IUserDbServiceToken)

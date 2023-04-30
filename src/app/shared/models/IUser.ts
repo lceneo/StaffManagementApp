@@ -20,6 +20,7 @@ export interface IUserFilters{
   companyPosition: string;
   gender: Gender;
   projectName: string;
+  fired: boolean;
 }
 
 export interface IUser {
@@ -39,6 +40,7 @@ export interface IUser {
   salaryHistory: Array<{date: Date, salary: number}>;
   lastPromotion?: Promotion;
   img? : string;
+  fired: boolean;
 }
 
 export interface IUserFb {

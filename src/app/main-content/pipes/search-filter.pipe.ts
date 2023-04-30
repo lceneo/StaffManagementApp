@@ -16,6 +16,7 @@ export class SearchFilterPipe implements PipeTransform {
       && (u.companyPosition === filters.companyPosition || !filters.companyPosition)
       && (u.gender === filters.gender || filters.gender === Gender.Undefined)
       && (u.projectName === filters.projectName || !filters.projectName)
+      && (u.fired === filters.fired)
     );
   }
 }
