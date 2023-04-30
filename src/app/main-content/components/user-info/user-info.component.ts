@@ -46,7 +46,7 @@ export class UserInfoComponent implements OnInit{
       return;
     this.isFirstIteration = false;
     Object.keys(user).forEach((key) => {
-      if(key === "id" || key === "salaryHistory")
+      if(key === "id" || key === "salaryHistory" || key === "lastPromotion")
         return;
       let type = "text";
       const value = user[key as keyof IUser];

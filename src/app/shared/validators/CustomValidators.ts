@@ -22,4 +22,12 @@ export class CustomValidators{
   public static spaceValidator(control: AbstractControl){
     return !control.value.includes(" ") ? null : {spaceValidator: true};
   }
+
+  public static onlyLettersValidator(control: AbstractControl){
+    return /^[a-zA-Zа-яА-Я]+$/.test(control.value) ? null : {onlyLettersValidator: true};
+  }
+
+  public static onlyDigitsValidator(control: AbstractControl){
+    return /^[0-9]+$/.test(control.value) ? null : {onlyDigitsValidator: true};
+  }
 }

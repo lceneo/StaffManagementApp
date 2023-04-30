@@ -12,15 +12,15 @@ import {Router} from "@angular/router";
 })
 export class CreateUserComponent implements OnInit{
   public form: FormGroup = new FormGroup({
-    name: new FormControl("", [Validators.required, CustomValidators.spaceValidator]),
-    surname: new FormControl("", [Validators.required, CustomValidators.spaceValidator]),
-    patronic: new FormControl("",  CustomValidators.spaceValidator),
-    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80)]),
+    name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
+    surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
+    patronic: new FormControl("",  CustomValidators.onlyLettersValidator),
+    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    salary: new FormControl("", [Validators.required, Validators.min(1000), Validators.max(1000000)]),
+    salary: new FormControl("", [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator]),
     birthdayDate: new FormControl(new Date(), Validators.required),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
@@ -55,7 +55,6 @@ export class CreateUserComponent implements OnInit{
   }
 
   public addSalaryHistoryItem(){
-    console.log(this.imgInput.nativeElement.files[0])
     this.salaryHistoryForm.insert(0, this.getEmptySalaryForm());
   }
 
@@ -73,8 +72,8 @@ export class CreateUserComponent implements OnInit{
 
   private getEmptySalaryForm(){
     return new FormGroup({
-      date: new FormControl(new Date()),
-      salary: new FormControl()
+      date: new FormControl(new Date(), Validators.required),
+      salary: new FormControl(null, [Validators.required, CustomValidators.onlyDigitsValidator, Validators.min(1000), Validators.max(1000000)])
     });
   }
 }
