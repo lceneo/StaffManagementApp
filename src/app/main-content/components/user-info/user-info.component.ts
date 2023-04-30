@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, map, mergeMap, Observable, tap} from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {FormArray, FormControl, FormGroup} from "@angular/forms";
-import firebase from "firebase/compat/app";
+import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 
 @Component({
   selector: 'app-user-info',
@@ -18,38 +18,33 @@ export class UserInfoComponent implements OnInit{
   public onEdit$ = new BehaviorSubject(false);
   public form = new FormGroup({});
   public salaryItemsArray!: FormArray;
+  private isFirstIteration = true;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     @Inject(IUserDbServiceToken)
-    private fbDb: IUserDbService
+    private fbDb: IUserDbService,
+    private fbEntities: FbEntitiesService
   ) {}
 
   public ngOnInit(): void {
-    let isFirst = false;
     this.user$ = this.activatedRoute.params
       .pipe(
-        mergeMap(params => this.fbDb.getUserById$(params["id"])),
-        map((res, index) => {
-          if(index === 0)
-            isFirst = true;
-          const data = res[0].payload.doc.data();
-          //@ts-ignore;
-          const [birthdayDate, interviewDate, firstWorkDayDate] = [new Date(data.birthdayDate.seconds * 1000), new Date(data.interviewDate.seconds * 1000),  new Date(data.firstWorkDayDate.seconds * 1000)]
-          //@ts-ignore;
-          const salaryHistory = data.salaryHistory.map(salaryItem => ({date: new Date(salaryItem.date.seconds * 1000), salary: salaryItem.salary}));
-          return {...data, birthdayDate: birthdayDate, interviewDate: interviewDate, firstWorkDayDate: firstWorkDayDate, salaryHistory: salaryHistory} as unknown as IUser;
-        }),
+        mergeMap(params => this.fbEntities.users$
+          .pipe(map(users => users.find(u => u.id === params["id"]) as IUser))
+            .pipe(
         tap(user => {
-          if(isFirst)
+          if(this.isFirstIteration)
             this.initialiseFormControlsFromUserInfo(user);
-          isFirst = false;
         }
-      ));
+      ))));
   }
 
   private initialiseFormControlsFromUserInfo(user: IUser){
+    if(!user)
+      return;
+    this.isFirstIteration = false;
     Object.keys(user).forEach((key) => {
       if(key === "id" || key === "salaryHistory")
         return;
@@ -68,7 +63,7 @@ export class UserInfoComponent implements OnInit{
     this.form.addControl("salaryHistory", this.salaryItemsArray);
   }
   public updateUserInfo(user: IUser){
-    this.fbDb.updateUser(user, {...this.form.value, salaryHistory: this.salaryItemsArray.value})
+    this.fbDb.updateUser(user, {...this.form.value})
       .then(() => this.onEdit$.next(false));
   }
   public makeUserFieldsEditable(){

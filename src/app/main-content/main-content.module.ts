@@ -23,6 +23,7 @@ import {SharedModule} from "../shared/shared.module";
 import { CreateUserComponent } from './components/create-user/create-user.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
+import {FbEntitiesService} from "../shared/services/fb-entities.service";
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import {MatNativeDateModule} from "@angular/material/core";
     {
       provide: UsersToken,
       useFactory: fbDataTransformationFn
-    }
+    },
+    FbEntitiesService
   ],
   exports:[]
 })

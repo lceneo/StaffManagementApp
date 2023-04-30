@@ -7,7 +7,10 @@
       <ul class="users__list" *ngLet="users$ | async | searchFilter: searchFilters  as filteredUsers">
           <li class="users__item" *ngFor="let user of filteredUsers
            | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
-            <mat-card class="users__card">
+            <mat-card class="users__card" [ngClass]="{
+               'users__card-successfulWorker': user.lastPromotion === 0,
+               'users__card-unsuccessfulWorker': user.lastPromotion === 2
+            }">
               <mat-card-header>
                 <mat-card-title-group>
                   <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>

@@ -48,7 +48,7 @@ export class CreateUserComponent implements OnInit{
   }
 
   public createUser(){
-    this.fbDb.addUser({...this.form.value, salaryHistory: this.salaryHistoryForm.value});
+    this.fbDb.addUser({...this.form.value});
     this.returnToUsersList();
   }
 

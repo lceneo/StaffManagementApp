@@ -18,6 +18,12 @@
   }
   &__card{
     padding-bottom: 10px;
+    &-successfulWorker{
+      border: green dashed 2px;
+    }
+    &-unsuccessfulWorker{
+      border: red dashed 2px;
+    }
   }
   &__link{
    text-align: center;
