@@ -6,7 +6,7 @@
       <button mat-raised-button color="warn" (click)="fireUser(user)" [hidden]="!onEdit">Уволить сотрудника</button>
     </div>
     <div>
-      <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()">
+      <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
         <mat-icon>arrow_back</mat-icon>
       </button>
     <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "restoreFieldsChanges(user)">
