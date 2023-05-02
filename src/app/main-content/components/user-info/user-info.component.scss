@@ -1,15 +1,16 @@
 .wrapper{
-  display: flex;
   padding-top: 100px;
   width: 1300px;
   margin: 0 auto;
 }
 
 .userInfo{
+  display: flex;
+  justify-content: space-between;
   margin-left: 200px;
 }
 
-.editBtn{
+.editBtn, .restoreBtn{
   position: absolute;
   top: 0px;
   right: 20px;
@@ -38,6 +39,7 @@
 }
 
 .salaryItem{
+  display: flex;
   &__date{
     margin-right: 30px;
   }
@@ -47,5 +49,11 @@ p{
   font-size: 16px;
   span{
     color: grey;
+  }
+}
+
+.form{
+  &__saveBtn{
+    margin-left: 33%;
   }
 }

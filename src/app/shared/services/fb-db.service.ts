@@ -40,18 +40,15 @@ export class FbDbService implements IUserDbService{
   public usersCollectionPath?: string;
   constructor(private afs: AngularFirestore) { }
 
-  public addUser(user: IUser, img?: File){
+  public addUser(user: IUser){
     const newDocRef = this.afs.collection<IUser>('/Users').doc().ref;
     user.id = newDocRef.id;
-    if(img){
-      const imgRef = firebase.storage().ref(`images${user.id}`);
-      const imgPushTask = imgRef.put(img);
-      return imgPushTask.then( v =>
-       v.ref.getDownloadURL().then(url => user.img = url)
-         .then(() => newDocRef.set(user))
-      );
-    }
     return newDocRef.set(user);
+  }
+
+  public uploadUserImg(user: IUser, img: File){
+    const imgRef = firebase.storage().ref(`images${user.id}`);
+    return imgRef.put(img);
   }
 
   public getAllUsers$(){

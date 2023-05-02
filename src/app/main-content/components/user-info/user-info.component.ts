@@ -1,10 +1,18 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
-import {IUser, IUserFb} from "../../../shared/models/IUser";
+import {
+  ChangeDetectionStrategy,
+  Component, ElementRef,
+  Inject, OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import {IUser} from "../../../shared/models/IUser";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BehaviorSubject, map, mergeMap, Observable, tap} from "rxjs";
+import {BehaviorSubject, delay, filter, map, mergeMap, Observable, skipWhile, Subject, tap} from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
-import {FormArray, FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
+import {CustomValidators} from "../../../shared/validators/CustomValidators";
 
 @Component({
   selector: 'app-user-info',
@@ -12,13 +20,37 @@ import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
   styleUrls: ['./user-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserInfoComponent implements OnInit{
+export class UserInfoComponent implements OnInit, OnDestroy{
+  public form: FormGroup = new FormGroup({
+    name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
+    surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
+    patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
+    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
+    gender: new FormControl("", Validators.required),
+    education: new FormControl("", Validators.required),
+    projectName: new FormControl("", Validators.required),
+    companyPosition: new FormControl("", Validators.required),
+    salary: new FormControl("", [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator]),
+    birthdayDate: new FormControl(new Date(), Validators.required),
+    interviewDate: new FormControl(new Date(), Validators.required),
+    firstWorkDayDate: new FormControl(new Date(), Validators.required),
+    salaryHistory: new FormArray([])
+  });
+
   public user$?: Observable<IUser>;
-  public userPropertyKeys: Array<{propName: string, type: string, value: any}> = [];
+  public userPropertyKeys: Array<{propName: string, template: TemplateRef<{propName: string}>}> = [];
   public onEdit$ = new BehaviorSubject(false);
-  public form = new FormGroup({});
   public salaryItemsArray!: FormArray;
   private isFirstIteration = true;
+  private getUserForProps$ = new BehaviorSubject<IUser>(null as unknown as  IUser);
+
+  @ViewChild("defaultTemplate",{static: false}) defaultTemplate!: TemplateRef<{propName: string}>;
+  @ViewChild("dateTemplate",{static: false}) dateTemplate!: TemplateRef<{propName: string}>;
+  @ViewChild("genderTemplate",{static: false}) genderTemplate!: TemplateRef<{propName: string}>;
+  @ViewChild("salaryItemTemplate",{static: false}) salaryItemTemplate!: TemplateRef<{propName: string}>;
+
+  @ViewChild("imgInput") imgInput!: ElementRef;
+  @ViewChild("imgContainer") imgContainer!: ElementRef;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -32,39 +64,66 @@ export class UserInfoComponent implements OnInit{
     this.user$ = this.activatedRoute.params
       .pipe(
         mergeMap(params => this.fbEntities.users$
-          .pipe(map(users => users.find(u => u.id === params["id"]) as IUser))
-            .pipe(
-        tap(user => {
-          if(this.isFirstIteration)
-            this.initialiseFormControlsFromUserInfo(user);
-        }
-      ))));
+          .pipe
+          (
+            map(users => users.find(u => u.id === params["id"]) as IUser),
+            skipWhile(user => !user),
+            delay(0),
+            tap((user) => this.initialiseUserProps(user) )
+            )
+        )
+      );
   }
 
-  private initialiseFormControlsFromUserInfo(user: IUser){
+  private initialiseUserProps(user: IUser){
     if(!user)
       return;
+    if(!this.isFirstIteration)
+      return;
     this.isFirstIteration = false;
-    Object.keys(user).forEach((key) => {
-      if(key === "id" || key === "salaryHistory" || key === "lastPromotion" || key === "fired" || key === "img")
+    Object.keys(this.form.controls).forEach(key => {
+      let template;
+      if(this.form.controls[key].value instanceof Date)
+        template = this.dateTemplate;
+      else if(Array.isArray(this.form.controls[key].value)) {
+        this.initialiseSalaryItems(user);
         return;
-      let type = "text";
-      const value = user[key as keyof IUser];
-      if(key === "gender")
-        type = "gender";
-      else if(key === "birthdayDate" || key === "interviewDate" || key === "firstWorkDayDate")
-        type = "date"
-      this.userPropertyKeys.push({propName: key, type: type, value: value});
-      this.form.addControl(key, new FormControl(value));
+      }
+      else if(key === "gender")
+        template = this.genderTemplate;
+      else
+        template = this.defaultTemplate;
+      this.form.controls[key].setValue(user[key as keyof IUser]);
+      this.userPropertyKeys.push({propName: key, template: template});
     })
-    const salaryHistoryControls = user.salaryHistory.map(salaryItem =>
-      new FormGroup({date: new FormControl(new Date(salaryItem.date)), salary: new FormControl(salaryItem.salary)}));
-    this.salaryItemsArray = new FormArray(salaryHistoryControls);
-    this.form.addControl("salaryHistory", this.salaryItemsArray);
+    this.form.disable();
   }
+
+  private initialiseSalaryItems(user: IUser){
+    this.salaryItemsArray = this.form.controls.salaryHistory as FormArray;
+    user.salaryHistory.forEach(salaryItem => this.salaryItemsArray.insert(this.salaryItemsArray.controls.length, this.createSalaryFormFromItem(salaryItem)));
+  }
+
+
   public updateUserInfo(user: IUser, value: Partial<IUser>){
-    this.fbDb.updateUser(user, {...value})
-      .then(() => this.onEdit$.next(false));
+    const imgFile = this.imgInput.nativeElement.files[0];
+    if(imgFile){
+      this.getUploadImgTask(user, imgFile)
+        .then((img) => {
+          this.fbDb.updateUser(user, {...value, img: img})
+            .then(() => {
+              this.onEdit$.next(false)
+              this.form.disable();
+            });
+        })
+    }
+    else {
+      this.fbDb.updateUser(user, {...value})
+        .then(() => {
+          this.onEdit$.next(false)
+          this.form.disable();
+        });
+    }
   }
 
   public fireUser(user: IUser){
@@ -73,6 +132,7 @@ export class UserInfoComponent implements OnInit{
 
   public makeUserFieldsEditable(){
       this.onEdit$.next(true);
+      this.form.enable();
   }
 
   public restoreFieldsChanges(user: IUser){
@@ -88,6 +148,9 @@ export class UserInfoComponent implements OnInit{
       }
      this.form.get(controlKey)?.setValue(user[controlKey as keyof IUser]);
     }
+    this.form.disable();
+    this.imgInput.nativeElement.files = null;
+    this.imgContainer.nativeElement.src = user.img || 'assets/img/temporary-user.PNG';
   }
 
   public returnToUsersList(){
@@ -99,19 +162,26 @@ export class UserInfoComponent implements OnInit{
   }
 
   public addSalaryHistoryItem(){
-    this.salaryItemsArray.insert(0, this.getEmptySalaryForm());
+    this.salaryItemsArray.insert(0, this.createSalaryFormFromItem());
   }
-  private getEmptySalaryForm(){
+
+  private createSalaryFormFromItem(salaryItem: {date: Date, salary: number} = {date: new Date(), salary: 0}){
     return new FormGroup({
-      date: new FormControl(new Date()),
-      salary: new FormControl()
+      date: new FormControl(salaryItem.date),
+      salary: new FormControl(salaryItem.salary, [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator])
     });
   }
 
-  private createSalaryFormFromItem(salaryItem: {date: Date, salary: number}){
-    return new FormGroup({
-      date: new FormControl(salaryItem.date),
-      salary: new FormControl(salaryItem.salary)
-    });
+  private getUploadImgTask(user: IUser, imgFile: File){
+   return this.fbDb.uploadUserImg(user, imgFile)
+      .then(v => v.ref.getDownloadURL());
+  }
+
+  public uploadImg(){
+    this.imgContainer.nativeElement.src = URL.createObjectURL(this.imgInput.nativeElement.files[0]);
+  }
+
+  public ngOnDestroy(): void {
+    this.getUserForProps$.complete();
   }
 }

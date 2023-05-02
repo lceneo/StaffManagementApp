@@ -3,6 +3,7 @@ import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {Router} from "@angular/router";
+import {IUser} from "../../../shared/models/IUser";
 
 @Component({
   selector: 'app-create-user',
@@ -29,6 +30,7 @@ export class CreateUserComponent implements OnInit{
 
   @ViewChild("imgInput") imgInput!: ElementRef;
   @ViewChild("imgContainer") imgContainer?: ElementRef;
+
   public salaryHistoryForm!: FormArray;
   public userKeys: Array<{propName: string, type: string}> = [];
   constructor(
@@ -50,7 +52,14 @@ export class CreateUserComponent implements OnInit{
   }
 
   public createUser(){
-    this.fbDb.addUser({...this.form.value, fired: false}, this.imgInput.nativeElement.files[0]);
+    const imgFile = this.imgInput.nativeElement.files[0];
+    const user = {...this.form.value};
+    if(imgFile){
+      this.getUploadImgTask(user, imgFile)
+        .then((img) => this.fbDb.addUser({...user, img: img, fired: false}));
+    }
+    else
+      this.fbDb.addUser({...this.form.value, fired: false});
     this.returnToUsersList();
   }
 
@@ -64,6 +73,11 @@ export class CreateUserComponent implements OnInit{
 
   public returnToUsersList(){
     this.router.navigate(["users"]);
+  }
+
+  private getUploadImgTask(user: IUser, imgFile: File){
+    return this.fbDb.uploadUserImg(user, imgFile)
+      .then(v => v.ref.getDownloadURL());
   }
 
   public uploadImg(){
