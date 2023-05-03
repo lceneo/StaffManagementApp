@@ -24,6 +24,7 @@ import { CreateUserComponent } from './components/create-user/create-user.compon
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {FbEntitiesService} from "../shared/services/fb-entities.service";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -34,27 +35,28 @@ import {FbEntitiesService} from "../shared/services/fb-entities.service";
     SearchFiltersComponent,
     CreateUserComponent
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    NgxPaginationModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSliderModule,
-    MatSelectModule,
-    FormsModule,
-    MatCardModule,
-    RouterModule.forChild([
-      {path: "", component: UsersListComponent},
-      {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
-      {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
-    ]),
-    MatDatepickerModule,
-    MatNativeDateModule
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        NgxPaginationModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSliderModule,
+        MatSelectModule,
+        FormsModule,
+        MatCardModule,
+        RouterModule.forChild([
+            {path: "", component: UsersListComponent},
+            {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
+            {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
+        ]),
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatProgressSpinnerModule
+    ],
   providers: [
     {
       provide: IUserDbServiceToken,

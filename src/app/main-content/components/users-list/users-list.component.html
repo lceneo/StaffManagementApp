@@ -1,40 +1,48 @@
-<section class="users">
-  <div class="wrapper">
-    <div class="users__info" *ngLet="filters$ | async as searchFilters">
-      <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()">
-        <mat-icon>add</mat-icon>
-      </button>
-      <ul class="users__list" *ngLet="users$ | async | searchFilter: searchFilters  as filteredUsers">
-          <li class="users__item" *ngFor="let user of filteredUsers
-           | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
-            <mat-card class="users__card" [ngClass]="{
-               'users__card-successfulWorker': user.lastPromotion === 0,
-               'users__card-unsuccessfulWorker': user.lastPromotion === 2
-            }">
-              <mat-card-header>
-                <mat-card-title-group>
-                  <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>
-                  <mat-card-subtitle>{{user.companyPosition}}</mat-card-subtitle>
-                </mat-card-title-group>
-              </mat-card-header>
-              <mat-card-content class="matCardContent">
-                <div>
-                  <p><span>Проект:</span> {{user.projectName}}</p>
-                  <p><span>Возраст:</span> {{user.age}}</p>
-                  <p><span>Пол:</span> {{user.gender}}</p>
-                  <p><span>Заработная плата:</span> {{user.salary | currency: "RUB" }}</p>
-                </div>
-                <img class="users__img" mat-card-xl-image [src]="user.img ?? 'assets/img/temporary-user.PNG'" alt="Employee photo">
-              </mat-card-content>
-              <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">Перейти в профиль</a>
-            </mat-card>
-          </li>
-      </ul>
-    </div>
-    <app-search-filters class="users__filters" (filters$)="filters$.next($event)"></app-search-filters>
-  </div>
-  <pagination-controls class="users__paginator" (pageChange)="currentPage = $event" previousLabel = "" nextLabel= "">
-  </pagination-controls>
-</section>
 
+<ng-container class="container" *ngLet="isLoading$ | async as isLoading">
+
+  <mat-spinner class="spinner" *ngIf="isLoading; else usersTemplate"></mat-spinner>
+
+<ng-template #usersTemplate>
+  <section class="users">
+    <div class="wrapper">
+      <div class="users__info" *ngLet="filters$ | async as searchFilters">
+        <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()">
+          <mat-icon>add</mat-icon>
+        </button>
+        <ul class="users__list" *ngLet="users$ | async | searchFilter: searchFilters  as filteredUsers">
+            <li class="users__item" *ngFor="let user of filteredUsers
+             | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
+              <mat-card class="users__card" [ngClass]="{
+                 'users__card-successfulWorker': user.lastPromotion === 0,
+                 'users__card-unsuccessfulWorker': user.lastPromotion === 2
+              }">
+                <mat-card-header>
+                  <mat-card-title-group>
+                    <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>
+                    <mat-card-subtitle>{{user.companyPosition}}</mat-card-subtitle>
+                  </mat-card-title-group>
+                </mat-card-header>
+                <mat-card-content class="matCardContent">
+                  <div>
+                    <p><span>Проект:</span> {{user.projectName}}</p>
+                    <p><span>Возраст:</span> {{user.age}}</p>
+                    <p><span>Пол:</span> {{user.gender}}</p>
+                    <p><span>Заработная плата:</span> {{user.salary | currency: "RUB" }}</p>
+                  </div>
+                  <img class="users__img" mat-card-xl-image [src]="user.img ?? 'assets/img/temporary-user.PNG'" alt="Employee photo">
+                </mat-card-content>
+                <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">Перейти в профиль</a>
+              </mat-card>
+            </li>
+        </ul>
+      </div>
+      <app-search-filters class="users__filters" (filters$)="filters$.next($event)"></app-search-filters>
+    </div>
+    <pagination-controls class="users__paginator" (pageChange)="currentPage = $event" previousLabel = "" nextLabel= "">
+    </pagination-controls>
+  </section>
+</ng-template>
+
+</ng-container>
 

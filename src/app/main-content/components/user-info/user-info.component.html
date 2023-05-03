@@ -1,88 +1,105 @@
 <div class="wrapper" *ngLet="user$ | async as user">
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
-    <div>
-      <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
-      <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
-      <button mat-raised-button color="warn" (click)="fireUser(user)" [hidden]="!onEdit">Уволить сотрудника</button>
-    </div>
-    <div>
-      <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
+    <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
+    <ng-template #usersTemplate>
+      <div>
+        <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
+        <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
+        <button mat-raised-button color="warn" (click)="fireUser(user)" [hidden]="user.fired || !onEdit">Уволить сотрудника</button>
+      </div>
+      <div>
+        <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "restoreFieldsChanges(user)">
         <mat-icon>arrow_back</mat-icon>
       </button>
-    <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "restoreFieldsChanges(user)">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()">
-      <mat-icon>edit</mat-icon>
-    </button>
-      <form class="form" [formGroup]="form">
-        <ng-container *ngFor="let prop of userPropertyKeys">
-          <ng-container *ngTemplateOutlet="prop.template; context: {$implicit: prop.propName}"></ng-container>
-        </ng-container>
-        <div class="salaryInfo">
-          <div class="salaryInfo__description">
-            <p><span>История зарплаты:</span></p>
-            <button mat-icon-button (click)="addSalaryHistoryItem()" [hidden]="!onEdit">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div class="salaryInfo__items">
-            <div *ngFor="let control of salaryItemsArray?.controls; let i = index">
-              <ng-container *ngTemplateOutlet="salaryItemTemplate; context: {$implicit: control, index: i}"></ng-container>
+      <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()">
+        <mat-icon>edit</mat-icon>
+      </button>
+        <form class="form" [formGroup]="form">
+          <ng-container *ngFor="let prop of userPropertyKeys">
+            <ng-container *ngIf="prop.templateName === 'defaultTemplate'">
+              <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName}"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="prop.templateName === 'dateTemplate'">
+              <ng-container *ngTemplateOutlet="dateTemplate; context: {$implicit: prop.propName}"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="prop.templateName === 'genderTemplate'">
+              <ng-container *ngTemplateOutlet="genderTemplate; context: {$implicit: prop.propName}"></ng-container>
+            </ng-container>
+          </ng-container>
+          <div class="salaryInfo">
+            <div class="salaryInfo__description">
+              <p><span>История зарплаты:</span></p>
+              <button mat-icon-button (click)="addSalaryHistoryItem()" [hidden]="!onEdit">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <div class="salaryInfo__items">
+              <div *ngFor="let control of salaryItemsArray?.controls; let i = index">
+                <ng-container *ngTemplateOutlet="salaryItemTemplate; context: {$implicit: control, index: i}"></ng-container>
+              </div>
             </div>
           </div>
-        </div>
-        <button class="form__saveBtn" mat-raised-button color="primary" (click)="updateUserInfo(user, form.value)" [disabled] = "form.invalid" [hidden]="!onEdit">Сохранить информацию</button>
+          <button class="form__saveBtn" mat-raised-button color="primary" (click)="updateUserInfo(user, form.value)" [disabled] = "form.invalid" [hidden]="!onEdit">Сохранить информацию</button>
 
-        <ng-template #defaultTemplate let-controlName>
-          <div>
+          <ng-template #defaultTemplate let-controlName>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{controlName}}</mat-label>
+                <input class = "form__input" matInput type="text" [formControlName]="controlName">
+              </mat-form-field>
+            </div>
+          </ng-template>
+
+          <ng-template #dateTemplate let-controlName>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{controlName}}</mat-label>
+                <input readonly matInput [matDatepicker]="picker" [formControlName]="controlName">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </ng-template>
+
+          <ng-template #genderTemplate let-controlName>
             <mat-form-field appearance="outline">
               <mat-label>{{controlName}}</mat-label>
-              <input class = "form__input" matInput type="text" [formControlName]="controlName">
+              <mat-select [formControlName]="controlName">
+                <mat-option [value]="'Мужской'">Мужской</mat-option>
+                <mat-option [value]="'Женский'">Женский</mat-option>
+              </mat-select>
             </mat-form-field>
-          </div>
-        </ng-template>
+          </ng-template>
 
-        <ng-template #dateTemplate let-controlName>
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>{{controlName}}</mat-label>
-              <input readonly matInput [matDatepicker]="picker" [formControlName]="controlName">
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-          </div>
-        </ng-template>
-
-        <ng-template #genderTemplate let-controlName>
-          <mat-form-field appearance="outline">
-            <mat-label>{{controlName}}</mat-label>
-            <mat-select [formControlName]="controlName">
-              <mat-option [value]="'Мужской'">Мужской</mat-option>
-              <mat-option [value]="'Женский'">Женский</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-template>
-
-        <ng-template #salaryItemTemplate let-control let-index = "index">
-          <div class="salaryItem">
-            <mat-form-field class="salaryItem__date" appearance="outline">
-              <mat-label>Укажите дату</mat-label>
-              <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field class="form__inputWrapper" appearance="outline">
-              <mat-label>Укажите зарплату</mat-label>
-              <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
-            </mat-form-field>
-            <button [hidden]="!onEdit" mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryItemsArray.controls.length === 1">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </ng-template>
-      </form>
-    </div>
+          <ng-template #salaryItemTemplate let-control let-index = "index">
+            <div class="salaryItem">
+              <mat-form-field class="salaryItem__date" appearance="outline">
+                <mat-label>Укажите дату</mat-label>
+                <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="form__inputWrapper" appearance="outline">
+                <mat-label>Укажите зарплату</mat-label>
+                <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
+              </mat-form-field>
+                <img [hidden]="index === salaryRaising.length || onEdit" class="salaryItem__raiseStatus"
+                     [src]="salaryRaising[index] > 0 ? 'assets/img/arrow-up-icon.svg' : 'assets/img/arrow-down-icon.svg'" height="30px" width="30px">
+                <span class="salaryItem__raisePercent" [ngClass]="{
+                    'salaryItem__raisePercent-up': salaryRaising[index] > 0,
+                    'salaryItem__raisePercent-down': salaryRaising[index] < 0
+                }" [hidden]="index === salaryRaising.length || onEdit">{{salaryRaising[index]}}</span>
+              <button [hidden]="!onEdit" mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryItemsArray.controls.length === 1">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </ng-template>
+        </form>
+      </div>
+    </ng-template>
   </div>
 </div>
 

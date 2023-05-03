@@ -38,16 +38,13 @@ export class UserInfoComponent implements OnInit, OnDestroy{
   });
 
   public user$?: Observable<IUser>;
-  public userPropertyKeys: Array<{propName: string, template: TemplateRef<{propName: string}>}> = [];
+  public userPropertyKeys: Array<{propName: string, templateName: string}> = [];
   public onEdit$ = new BehaviorSubject(false);
   public salaryItemsArray!: FormArray;
+  public salaryRaising: number[] = [];
   private isFirstIteration = true;
   private getUserForProps$ = new BehaviorSubject<IUser>(null as unknown as  IUser);
-
-  @ViewChild("defaultTemplate",{static: false}) defaultTemplate!: TemplateRef<{propName: string}>;
-  @ViewChild("dateTemplate",{static: false}) dateTemplate!: TemplateRef<{propName: string}>;
-  @ViewChild("genderTemplate",{static: false}) genderTemplate!: TemplateRef<{propName: string}>;
-  @ViewChild("salaryItemTemplate",{static: false}) salaryItemTemplate!: TemplateRef<{propName: string}>;
+  public isLoading$ = new BehaviorSubject<boolean>(true);
 
   @ViewChild("imgInput") imgInput!: ElementRef;
   @ViewChild("imgContainer") imgContainer!: ElementRef;
@@ -68,7 +65,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
           (
             map(users => users.find(u => u.id === params["id"]) as IUser),
             skipWhile(user => !user),
-            delay(0),
+            delay(250),
             tap((user) => this.initialiseUserProps(user) )
             )
         )
@@ -84,24 +81,30 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     Object.keys(this.form.controls).forEach(key => {
       let template;
       if(this.form.controls[key].value instanceof Date)
-        template = this.dateTemplate;
+        template = "dateTemplate";
       else if(Array.isArray(this.form.controls[key].value)) {
         this.initialiseSalaryItems(user);
         return;
       }
       else if(key === "gender")
-        template = this.genderTemplate;
+        template = "genderTemplate";
       else
-        template = this.defaultTemplate;
+        template = "defaultTemplate";
       this.form.controls[key].setValue(user[key as keyof IUser]);
-      this.userPropertyKeys.push({propName: key, template: template});
+      this.userPropertyKeys.push({propName: key, templateName: template});
     })
+    this.isLoading$.next(false);
     this.form.disable();
   }
 
   private initialiseSalaryItems(user: IUser){
     this.salaryItemsArray = this.form.controls.salaryHistory as FormArray;
-    user.salaryHistory.forEach(salaryItem => this.salaryItemsArray.insert(this.salaryItemsArray.controls.length, this.createSalaryFormFromItem(salaryItem)));
+    for (let i = 0; i < user.salaryHistory.length; i++) {
+      this.salaryItemsArray.insert(this.salaryItemsArray.controls.length, this.createSalaryFormFromItem(user.salaryHistory[i]));
+      if(i > 0)
+        this.salaryRaising.push(Math.round((user.salaryHistory[i - 1].salary / (user.salaryHistory[i].salary / 100) - 100)));
+    }
+    console.log(this.salaryRaising);
   }
 
 
@@ -113,6 +116,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
           this.fbDb.updateUser(user, {...value, img: img})
             .then(() => {
               this.onEdit$.next(false)
+              this.updateSalaryRaisings();
               this.form.disable();
             });
         })
@@ -122,6 +126,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
         .then(() => {
           this.onEdit$.next(false)
           this.form.disable();
+          this.updateSalaryRaisings();
         });
     }
   }
@@ -130,6 +135,13 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     this.updateUserInfo(user, {fired: true});
   }
 
+  private updateSalaryRaisings(){
+    this.salaryRaising = [];
+    for (let i = 0; i < this.salaryItemsArray.controls.length; i++) {
+      if(i > 0)
+        this.salaryRaising.push(Math.round(this.salaryItemsArray.controls[i - 1].value.salary / (this.salaryItemsArray.controls[i].value.salary / 100) - 100));
+    }
+  }
   public makeUserFieldsEditable(){
       this.onEdit$.next(true);
       this.form.enable();

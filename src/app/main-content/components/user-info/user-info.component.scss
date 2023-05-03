@@ -43,6 +43,22 @@
   &__date{
     margin-right: 30px;
   }
+  &__raiseStatus{
+    align-self: center;
+    margin-bottom: 25px;
+  }
+  &__raisePercent{
+    align-self: center;
+    margin-left: 20px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    &-up{
+      color: green;
+    }
+    &-down{
+      color: red;
+    }
+  }
 }
 
 p{
@@ -56,4 +72,9 @@ p{
   &__saveBtn{
     margin-left: 33%;
   }
+}
+
+.spinner{
+  margin-left: 35%;
+  margin-top: 18%;
 }
