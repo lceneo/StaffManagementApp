@@ -23,7 +23,7 @@ import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
   styleUrls: ['./users-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UsersListComponent implements OnInit{
+export class UsersListComponent{
 
   public isLoading$ =  new BehaviorSubject<boolean>(true);
   private isFirstIteration = true;
@@ -49,8 +49,6 @@ export class UsersListComponent implements OnInit{
     private route: ActivatedRoute
   ) {}
 
-  public ngOnInit(): void {
-  }
 
   public openCreateUserDialog(){
      this.router.navigate(["create"], {relativeTo: this.route });
