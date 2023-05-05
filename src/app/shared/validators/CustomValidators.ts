@@ -24,11 +24,11 @@ export class CustomValidators{
   }
 
   public static onlyLettersValidator(control: AbstractControl){
-    return /^[a-zA-Zа-яА-Я]+$/.test(control.value) ? null : {onlyLettersValidator: true};
+    return /^[a-zA-Zа-яА-ЯеЁ]+$/.test(control.value) ? null : {onlyLettersValidator: true};
   }
 
   public static optionalOnlyLettersValidator(control: AbstractControl){
-    return /^[a-zA-Zа-яА-Я]+$/.test(control.value) || control.value.length === 0 ? null : {onlyLettersValidator: true};
+    return /^[a-zA-Zа-яА-ЯеЁ]+$/.test(control.value) || control.value.length === 0 ? null : {onlyLettersValidator: true};
   }
 
   public static onlyDigitsValidator(control: AbstractControl){
