@@ -1,15 +1,25 @@
 import firebase from "firebase/compat/app";
 
 export enum Gender {
-  Undefined = "Не указан",
+  Undefined = "Любой",
   Male = "Мужской",
   Female = "Женский"
 }
 
+export enum CompanyPosition{
+  Undefined = "Любая",
+  Developer = "Разработчик",
+  Tester = "Тестировщик",
+  DevOps = "DevOps инженер",
+  HR = "Менеджер по подбору персонала",
+  SystemAdministrator = "Системный администратор",
+  Designer = "Дизайнер"
+}
+
 export enum Promotion{
-  Recent,
-  Normal,
-  LongAgo
+  Successful = "Успешный",
+  Normal = "Обычный",
+  Unsuccessful = "Неуспешный"
 }
 
 
@@ -17,7 +27,7 @@ export interface IUserFilters{
   name: string;
   salaryFrom: number;
   salaryTo: number;
-  companyPosition: string;
+  companyPosition: CompanyPosition;
   gender: Gender;
   projectName: string;
   fired: boolean;
@@ -33,7 +43,7 @@ export interface IUser {
   birthdayDate: Date;
   education: string;
   projectName: string;
-  companyPosition: string;
+  companyPosition: CompanyPosition;
   salary: number;
   interviewDate: Date;
   firstWorkDayDate: Date;

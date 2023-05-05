@@ -1,7 +1,19 @@
 import {ChangeDetectionStrategy, Component, inject, Inject, OnInit,} from '@angular/core';
 import { IUser, IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
-import {BehaviorSubject, debounceTime, interval, map, mapTo, Observable, range, startWith, take, tap} from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  interval,
+  map,
+  mapTo,
+  Observable,
+  range,
+  skipWhile,
+  startWith,
+  take,
+  tap
+} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 
@@ -13,11 +25,22 @@ import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 })
 export class UsersListComponent implements OnInit{
 
-  public users$: BehaviorSubject<IUser[]> = inject(FbEntitiesService).users$;
+  public isLoading$ =  new BehaviorSubject<boolean>(true);
+  private isFirstIteration = true;
+
+  public users$ = inject(FbEntitiesService).users$
+                                            .pipe(
+                                              skipWhile(users => !users),
+                                              tap(() => {
+                                                if(this.isFirstIteration){
+                                                  this.dissolveLoadingEffect(250);
+                                                  this.isFirstIteration = false;
+                                                }
+                                              })
+                                            );
   public currentPage = 1;
   public itemsPerPage = 5;
   public filters$ = new BehaviorSubject<IUserFilters>(null as unknown as IUserFilters);
-  public isLoading$!: Observable<boolean>;
 
   constructor(
     @Inject(IUserDbServiceToken)
@@ -27,12 +50,6 @@ export class UsersListComponent implements OnInit{
   ) {}
 
   public ngOnInit(): void {
-    this.isLoading$ = interval(350)
-      .pipe(
-        take(1),
-        map(() => false),
-        startWith(true)
-      );
   }
 
   public openCreateUserDialog(){
@@ -43,7 +60,17 @@ export class UsersListComponent implements OnInit{
     this.router.navigate([userId], {relativeTo: this.route });
   }
 
-  public deleteUser(user: IUser){
-    this.fbDb.deleteUser(user);
+  private dissolveLoadingEffect(interval: number){
+    const timer = setTimeout(() => {
+      this.isLoading$.next(false);
+      clearTimeout(timer)
+    }, interval);
   }
+
+  public changePage(newPage: number){
+    this.isLoading$.next(true);
+    this.dissolveLoadingEffect(250);
+    this.currentPage = newPage;
+  }
+
 }

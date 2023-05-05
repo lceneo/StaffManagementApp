@@ -1,69 +1,109 @@
-<form [formGroup] = form class="form">
-  <ng-template #defaultTemplate let-controlName let-type = "type">
-    <div *ngIf="type === 'text'">
-      <mat-form-field class="form__inputWrapper" appearance="outline" *ngIf="controlName !== 'gender'; else genderTemplate">
-        <mat-label>{{controlName}}</mat-label>
-        <input class = "form__input" matInput [type]="type" [formControlName]="controlName">
-      </mat-form-field>
-      <ng-template #genderTemplate>
+
+<mat-spinner class="spinner" *ngIf="isLoading$ | async; else createUserTemplate"></mat-spinner>
+
+<ng-template #createUserTemplate>
+  <form [formGroup] = form class="form">
+
+    <ng-template #defaultTemplate let-controlName>
+      <div>
+        <mat-form-field class="form__inputWrapper" appearance="outline" *ngIf="controlName !== 'gender'; else genderTemplate">
+          <mat-label>{{controlName}}</mat-label>
+          <input class = "form__input" matInput [formControlName]="controlName">
+        </mat-form-field>
+      </div>
+    </ng-template>
+
+      <ng-template #genderTemplate let-controlName>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>{{controlName}}</mat-label>
+            <mat-select [formControlName]="controlName">
+              <mat-option [value]="'Мужской'">Мужской</mat-option>
+              <mat-option [value]="'Женский'">Женский</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-template>
+
+      <ng-template #companyPositionTemplate let-controlName>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>{{controlName}}</mat-label>
+            <mat-select [formControlName]="controlName">
+              <mat-option [value]="'Разработчик'">Разработчик</mat-option>
+              <mat-option [value]="'Тестировщик'">Тестировщик</mat-option>
+              <mat-option [value]="'DevOps инженер'">DevOps инженер</mat-option>
+              <mat-option [value]="'Менеджер по подбору персонала'">Менеджер по подбору персонала</mat-option>
+              <mat-option [value]="'Системный администратор'">Системный администратор</mat-option>
+              <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-template>
+
+    <ng-template #dateTemplate let-controlName>
+      <div>
         <mat-form-field appearance="outline">
           <mat-label>{{controlName}}</mat-label>
-          <mat-select [formControlName]="controlName">
-            <mat-option [value]="'Мужской'">Мужской</mat-option>
-            <mat-option [value]="'Женский'">Женский</mat-option>
-          </mat-select>
+          <input readonly matInput [matDatepicker]="picker" [formControlName]="controlName">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-      </ng-template>
+      </div>
+    </ng-template>
+
+    <ng-template #salaryHistoryTemplate let-control let-index = "index">
+      <div class="salaryItem">
+        <mat-form-field class="salaryItem__date" appearance="outline">
+          <mat-label>Укажите дату</mat-label>
+          <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="form__inputWrapper" appearance="outline">
+          <mat-label>Укажите зарплату</mat-label>
+          <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
+        </mat-form-field>
+        <button mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryHistoryForm.length === 1">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+    <button class="form__close" mat-icon-button (click)="returnToUsersList()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+        <img src="assets/img/temporary-user.PNG" #imgContainer width="300px" height="300px">
+        <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg">
     </div>
-    <div *ngIf="type === 'date'">
-      <mat-form-field appearance="outline">
-        <mat-label>{{controlName}}</mat-label>
-        <input readonly matInput [matDatepicker]="picker" [formControlName]="controlName">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-  </ng-template>
-  <ng-template #salaryHistoryTemplate let-control let-index = "index">
-    <div class="salaryItem">
-      <mat-form-field class="salaryItem__date" appearance="outline">
-        <mat-label>Укажите дату</mat-label>
-        <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field class="form__inputWrapper" appearance="outline">
-        <mat-label>Укажите зарплату</mat-label>
-        <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
-      </mat-form-field>
-      <button mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryHistoryForm.length === 1">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-  </ng-template>
-  <button class="form__close" mat-icon-button (click)="returnToUsersList()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <div>
-      <img #imgContainer width="300px" height="300px">
-      <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg">
-  </div>
-  <div style="display: flex; flex-direction: column">
-      <ng-container *ngFor="let prop of userKeys">
-        <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName, type: prop.type}"></ng-container>
-      </ng-container>
-      <div class="form__salaryHistory">
-        <div class="wrapper">
-          <p class="form__salaryHistory-subtitle"><span>История зарплаты:</span></p>
-          <button mat-icon-button (click)="addSalaryHistoryItem()">
-            <mat-icon>add</mat-icon>
-          </button>
-        </div>
-        <ng-container *ngFor="let salaryItem of salaryHistoryForm.controls; let i = index">
-          <ng-container *ngTemplateOutlet="salaryHistoryTemplate; context: {$implicit: salaryItem, index: i}">
+    <div style="display: flex; flex-direction: column">
+        <ng-container *ngFor="let prop of userKeys">
+          <ng-container *ngIf="prop.templateName === 'defaultTemplate'">
+            <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName}"></ng-container>
+          </ng-container>
+          <ng-container *ngIf="prop.templateName === 'dateTemplate'">
+            <ng-container *ngTemplateOutlet="dateTemplate; context: {$implicit: prop.propName}"></ng-container>
+          </ng-container>
+          <ng-container *ngIf="prop.templateName === 'companyPositionTemplate'">
+            <ng-container *ngTemplateOutlet="companyPositionTemplate; context: {$implicit: prop.propName}"></ng-container>
+          </ng-container>
+          <ng-container *ngIf="prop.templateName === 'genderTemplate'">
+            <ng-container *ngTemplateOutlet="genderTemplate; context: {$implicit: prop.propName}"></ng-container>
           </ng-container>
         </ng-container>
-      </div>
-    <button class="form__btn" mat-flat-button color="primary" (click) = "createUser()" [disabled] = "form.invalid">Сохранить пользователя</button>
-  </div>
-</form>
+        <div class="form__salaryHistory">
+          <div class="wrapper">
+            <p class="form__salaryHistory-subtitle"><span>История зарплаты:</span></p>
+            <button mat-icon-button (click)="addSalaryHistoryItem()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <ng-container *ngFor="let salaryItem of salaryHistoryForm.controls; let i = index">
+            <ng-container *ngTemplateOutlet="salaryHistoryTemplate; context: {$implicit: salaryItem, index: i}">
+            </ng-container>
+          </ng-container>
+        </div>
+      <button class="form__btn" mat-flat-button color="primary" (click) = "createUser()" [disabled] = "form.invalid">Сохранить пользователя</button>
+    </div>
+  </form>
+</ng-template>

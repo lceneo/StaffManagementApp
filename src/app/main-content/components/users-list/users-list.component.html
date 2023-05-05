@@ -1,7 +1,7 @@
 
-<ng-container class="container" *ngLet="isLoading$ | async as isLoading">
+<ng-container class="container" *ngLet="users$ | async as users">
 
-  <mat-spinner class="spinner" *ngIf="isLoading; else usersTemplate"></mat-spinner>
+  <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
 
 <ng-template #usersTemplate>
   <section class="users">
@@ -10,12 +10,12 @@
         <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()">
           <mat-icon>add</mat-icon>
         </button>
-        <ul class="users__list" *ngLet="users$ | async | searchFilter: searchFilters  as filteredUsers">
-            <li class="users__item" *ngFor="let user of filteredUsers
+        <ul class="users__list" *ngLet="users | searchFilter: searchFilters  as filteredUsers">
+            <li class="users__item" *ngFor="let user of filteredUsers | searchFilter: searchFilters
              | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
               <mat-card class="users__card" [ngClass]="{
-                 'users__card-successfulWorker': user.lastPromotion === 0,
-                 'users__card-unsuccessfulWorker': user.lastPromotion === 2
+                 'users__card-successfulWorker': user.lastPromotion === 'Успешный',
+                 'users__card-unsuccessfulWorker': user.lastPromotion === 'Неуспешный'
               }">
                 <mat-card-header>
                   <mat-card-title-group>
@@ -39,7 +39,7 @@
       </div>
       <app-search-filters class="users__filters" (filters$)="filters$.next($event)"></app-search-filters>
     </div>
-    <pagination-controls class="users__paginator" (pageChange)="currentPage = $event" previousLabel = "" nextLabel= "">
+    <pagination-controls class="users__paginator" (pageChange)="changePage($event)" previousLabel = "" nextLabel= "">
     </pagination-controls>
   </section>
 </ng-template>

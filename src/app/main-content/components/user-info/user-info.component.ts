@@ -3,7 +3,6 @@ import {
   Component, ElementRef,
   Inject, OnDestroy,
   OnInit,
-  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {IUser} from "../../../shared/models/IUser";
@@ -30,7 +29,6 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    salary: new FormControl("", [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator]),
     birthdayDate: new FormControl(new Date(), Validators.required),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
@@ -65,7 +63,6 @@ export class UserInfoComponent implements OnInit, OnDestroy{
           (
             map(users => users.find(u => u.id === params["id"]) as IUser),
             skipWhile(user => !user),
-            delay(250),
             tap((user) => this.initialiseUserProps(user) )
             )
         )
@@ -79,7 +76,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
       return;
     this.isFirstIteration = false;
     Object.keys(this.form.controls).forEach(key => {
-      let template;
+      let template = "defaultTemplate"
       if(this.form.controls[key].value instanceof Date)
         template = "dateTemplate";
       else if(Array.isArray(this.form.controls[key].value)) {
@@ -88,12 +85,12 @@ export class UserInfoComponent implements OnInit, OnDestroy{
       }
       else if(key === "gender")
         template = "genderTemplate";
-      else
-        template = "defaultTemplate";
+      else if(key === "companyPosition")
+        template = "companyPositionTemplate";
       this.form.controls[key].setValue(user[key as keyof IUser]);
       this.userPropertyKeys.push({propName: key, templateName: template});
     })
-    this.isLoading$.next(false);
+    this.dissolveLoadingEffect(250);
     this.form.disable();
   }
 
@@ -104,35 +101,38 @@ export class UserInfoComponent implements OnInit, OnDestroy{
       if(i > 0)
         this.salaryRaising.push(Math.round((user.salaryHistory[i - 1].salary / (user.salaryHistory[i].salary / 100) - 100)));
     }
-    console.log(this.salaryRaising);
   }
 
 
   public updateUserInfo(user: IUser, value: Partial<IUser>){
+    this.isLoading$.next(true);
+    const valueWithSalary = {...value, salary: this.salaryItemsArray.controls[0].value.salary}
     const imgFile = this.imgInput.nativeElement.files[0];
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
         .then((img) => {
-          this.fbDb.updateUser(user, {...value, img: img})
+          this.fbDb.updateUser(user, {...valueWithSalary, img: img})
             .then(() => {
               this.onEdit$.next(false)
               this.updateSalaryRaisings();
               this.form.disable();
+              this.dissolveLoadingEffect(0);
             });
         })
     }
     else {
-      this.fbDb.updateUser(user, {...value})
+      this.fbDb.updateUser(user, {...valueWithSalary})
         .then(() => {
           this.onEdit$.next(false)
           this.form.disable();
           this.updateSalaryRaisings();
+          this.dissolveLoadingEffect(0);
         });
     }
   }
 
-  public fireUser(user: IUser){
-    this.updateUserInfo(user, {fired: true});
+  public fireOrHireUser(user: IUser){
+    this.updateUserInfo(user, {fired: !user.fired});
   }
 
   private updateSalaryRaisings(){
@@ -193,7 +193,15 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     this.imgContainer.nativeElement.src = URL.createObjectURL(this.imgInput.nativeElement.files[0]);
   }
 
+  private dissolveLoadingEffect(interval: number){
+    const timer = setTimeout(() => {
+      this.isLoading$.next(false);
+      clearTimeout(timer)
+    }, interval);
+  }
+
   public ngOnDestroy(): void {
     this.getUserForProps$.complete();
   }
+
 }

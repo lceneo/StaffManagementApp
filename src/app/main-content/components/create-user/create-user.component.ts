@@ -4,6 +4,7 @@ import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IU
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {Router} from "@angular/router";
 import {IUser} from "../../../shared/models/IUser";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-create-user',
@@ -21,7 +22,6 @@ export class CreateUserComponent implements OnInit{
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    salary: new FormControl("", [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator]),
     birthdayDate: new FormControl(new Date(), Validators.required),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
@@ -31,8 +31,9 @@ export class CreateUserComponent implements OnInit{
   @ViewChild("imgInput") imgInput!: ElementRef;
   @ViewChild("imgContainer") imgContainer?: ElementRef;
 
+  public isLoading$ = new BehaviorSubject<boolean>(true);
   public salaryHistoryForm!: FormArray;
-  public userKeys: Array<{propName: string, type: string}> = [];
+  public userKeys: Array<{propName: string, templateName: string}> = [];
   constructor(
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
@@ -42,24 +43,32 @@ export class CreateUserComponent implements OnInit{
   public ngOnInit(): void {
     this.salaryHistoryForm = this.form.controls.salaryHistory as FormArray;
     Object.keys(this.form.controls).forEach(prop => {
-      let type = "text";
+      let templateName = "defaultTemplate";
       if(prop === "salaryHistory")
         return;
-      if(prop === "birthdayDate" || prop === "interviewDate" || prop === "firstWorkDayDate")
-        type = "date";
-      this.userKeys.push({propName: prop, type: type});
-    })
+      else if(prop === "birthdayDate" || prop === "interviewDate" || prop === "firstWorkDayDate")
+        templateName = "dateTemplate";
+      else if(prop === "gender")
+        templateName = "genderTemplate";
+      else if(prop === "companyPosition")
+        templateName = "companyPositionTemplate";
+      this.userKeys.push({propName: prop, templateName: templateName});
+    });
+    this.dissolveLoadingEffect(250);
   }
 
   public createUser(){
+    this.isLoading$.next(true);
     const imgFile = this.imgInput.nativeElement.files[0];
-    const user = {...this.form.value};
+    const user = {...this.form.value, fired: false, salary: this.salaryHistoryForm.controls[0].value.salary};
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
-        .then((img) => this.fbDb.addUser({...user, img: img, fired: false}));
+        .then((img) => this.fbDb.addUser({...user, img: img}))
+        .then(() => this.dissolveLoadingEffect(0));
     }
     else
-      this.fbDb.addUser({...this.form.value, fired: false});
+      this.fbDb.addUser(user)
+        .then(() => this.dissolveLoadingEffect(0));
     this.returnToUsersList();
   }
 
@@ -89,5 +98,12 @@ export class CreateUserComponent implements OnInit{
       date: new FormControl(new Date(), Validators.required),
       salary: new FormControl(null, [Validators.required, CustomValidators.onlyDigitsValidator, Validators.min(1000), Validators.max(1000000)])
     });
+  }
+
+  private dissolveLoadingEffect(interval: number){
+    const timer = setTimeout(() => {
+      this.isLoading$.next(false);
+      clearTimeout(timer)
+    }, interval);
   }
 }

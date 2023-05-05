@@ -9,21 +9,28 @@
     <input formControlName="salaryTo" matSliderEndThumb>
   </mat-slider>
   <mat-form-field appearance="outline">
+    <mat-label>Проект</mat-label>
+    <mat-select formControlName="projectName">
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Должность</mat-label>
     <mat-select formControlName="companyPosition">
+      <mat-option [value]="'Любая'">Любая</mat-option>
+      <mat-option [value]="'Разработчик'">Разработчик</mat-option>
+      <mat-option [value]="'Тестировщик'">Тестировщик</mat-option>
+      <mat-option [value]="'DevOps инженер'">DevOps инженер</mat-option>
+      <mat-option [value]="'Менеджер по подбору персонала'">Менеджер по подбору персонала</mat-option>
+      <mat-option [value]="'Системный администратор'">Системный администратор</mat-option>
+      <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Пол</mat-label>
     <mat-select formControlName="gender">
-      <mat-option [value]="'Не указан'">Не указан</mat-option>
+      <mat-option [value]="'Любой'">Любой</mat-option>
       <mat-option [value]="'Мужской'">Мужской</mat-option>
       <mat-option [value]="'Женский'">Женский</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Проект</mat-label>
-    <mat-select formControlName="projectName">
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">

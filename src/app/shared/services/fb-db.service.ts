@@ -20,13 +20,14 @@ export const fbDataTransformationFn = () => {
           [data.birthdayDate.toDate(), data.interviewDate.toDate(),  data.firstWorkDayDate.toDate()]
         const salaryHistory = data.salaryHistory.map(salaryItem => ({date: salaryItem.date.toDate(), salary: salaryItem.salary}));
         let user = {...data, birthdayDate: birthdayDate, interviewDate: interviewDate, firstWorkDayDate: firstWorkDayDate, salaryHistory: salaryHistory};
-        const recentPromotionDate = user.salaryHistory[0].date.getTime();
+        const recentPromotion = user.salaryHistory[0];
+        const recentPromotionDate = recentPromotion.date.getTime();
         const currentDate = Date.now();
-        const intervalBetweenPromotions = Math.floor((currentDate - recentPromotionDate) / (1000 * 3600 * 24));
-        if(intervalBetweenPromotions <= 89)
-          user.lastPromotion = Promotion.Recent;
-        else if(intervalBetweenPromotions > 182)
-          user.lastPromotion = Promotion.LongAgo;
+        const intervalBetweenPromotionAndCurrentDate = Math.floor((currentDate - recentPromotionDate) / (1000 * 3600 * 24));
+        if(intervalBetweenPromotionAndCurrentDate <= 89 && user.salaryHistory.length > 1)
+            user.lastPromotion = recentPromotion.salary > user.salaryHistory[1].salary ? Promotion.Successful : Promotion.Unsuccessful;
+        else if(intervalBetweenPromotionAndCurrentDate > 182)
+          user.lastPromotion = Promotion.Unsuccessful;
         else
           user.lastPromotion = Promotion.Normal;
         return user;

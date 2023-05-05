@@ -2,10 +2,12 @@
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
     <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
     <ng-template #usersTemplate>
-      <div>
+      <div class="imgWrapper">
         <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
         <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
-        <button mat-raised-button color="warn" (click)="fireUser(user)" [hidden]="user.fired || !onEdit">Уволить сотрудника</button>
+        <button class="btnChangeHireStatus" mat-raised-button [color]="user.fired ? 'primary' : 'warn'" (click)="fireOrHireUser(user)" [hidden]="onEdit">
+          {{user.fired ? "Нанять сотрудника" : "Уволить сотрудника"}}
+        </button>
       </div>
       <div>
         <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
@@ -27,6 +29,9 @@
             </ng-container>
             <ng-container *ngIf="prop.templateName === 'genderTemplate'">
               <ng-container *ngTemplateOutlet="genderTemplate; context: {$implicit: prop.propName}"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="prop.templateName === 'companyPositionTemplate'">
+              <ng-container *ngTemplateOutlet="companyPositionTemplate; context: {$implicit: prop.propName}"></ng-container>
             </ng-container>
           </ng-container>
           <div class="salaryInfo">
@@ -72,6 +77,22 @@
                 <mat-option [value]="'Женский'">Женский</mat-option>
               </mat-select>
             </mat-form-field>
+          </ng-template>
+
+          <ng-template #companyPositionTemplate let-controlName>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{controlName}}</mat-label>
+                <mat-select [formControlName]="controlName">
+                  <mat-option [value]="'Разработчик'">Разработчик</mat-option>
+                  <mat-option [value]="'Тестировщик'">Тестировщик</mat-option>
+                  <mat-option [value]="'DevOps инженер'">DevOps инженер</mat-option>
+                  <mat-option [value]="'Менеджер по подбору персонала'">Менеджер по подбору персонала</mat-option>
+                  <mat-option [value]="'Системный администратор'">Системный администратор</mat-option>
+                  <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </ng-template>
 
           <ng-template #salaryItemTemplate let-control let-index = "index">

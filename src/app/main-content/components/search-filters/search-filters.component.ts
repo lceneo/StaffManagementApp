@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
-import {Gender, IUserFilters} from "../../../shared/models/IUser";
+import {CompanyPosition, Gender, IUserFilters} from "../../../shared/models/IUser";
 import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
@@ -17,7 +17,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
     name: new FormControl(""),
     salaryFrom: new FormControl(1000),
     salaryTo: new FormControl(1000000),
-    companyPosition: new FormControl(""),
+    companyPosition: new FormControl(CompanyPosition.Undefined),
     gender: new FormControl(Gender.Undefined),
     projectName: new FormControl(""),
     fired: new FormControl(false)
