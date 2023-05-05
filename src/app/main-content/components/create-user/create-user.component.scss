@@ -1,5 +1,4 @@
 .form{
-  position: relative;
   display: flex;
   justify-content: space-between;
   padding-top: 130px;
@@ -20,7 +19,7 @@
   &__close{
     position: absolute;
     top: 0px;
-    left: -300px;
+    left: 20px;
   }
 }
 
