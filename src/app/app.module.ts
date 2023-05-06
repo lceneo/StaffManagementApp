@@ -13,6 +13,11 @@ import {MainContentModule} from "./main-content/main-content.module";
 import {ErrorHandlerModule} from "./error-handler/error-handler.module";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {FocusDirective} from "./shared/directives/focus.directive";
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import {FormsModule} from "@angular/forms";
+import {MatIconModule} from "@angular/material/icon";
 
 
 @NgModule({
@@ -28,10 +33,21 @@ import {FocusDirective} from "./shared/directives/focus.directive";
     AngularFirestoreModule.enablePersistence(),
     HttpClientModule,
     MainContentModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatSlideToggleModule,
+    MatCardModule,
+    FormsModule,
+    MatIconModule
   ],
   providers: [],
   exports: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  isChecked: boolean = false;
+  mode: string = '';
+
+  changed(event: MatSlideToggleChange): void{
+    document.body.classList.toggle('darkMode');
+  }
+ }

@@ -1,26 +1,87 @@
-
-  <form #myForm = "ngForm" class="form" [formGroup] = "form">
-    <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'email', type: 'email', translation: 'Почта'}"></ng-container>
-    <ng-container *ngTemplateOutlet="controlTemplate; context: {$implicit: 'password', type: 'password', translation: 'Пароль'}"></ng-container>
-    <ng-container *ngIf="incorrectAccountError$ | async as noAccountError">
-      <app-error-handler [errors]="noAccountError"></app-error-handler>
-    </ng-container>
-    <button mat-flat-button class="form__signInBtn" [disabled] = "form.invalid" color="primary" (click)="signIn()">Войти</button>
-    <a class="form__link" (click) = "redirectToSignUp()">Регистрация</a>
-    <ng-template #controlTemplate let-controlName let-type = "type" let-translation = "translation">
-      <div>
-        <mat-form-field *ngIf="controlName === 'email'" class="form__inputWrapper">
-          <img class="form__icon" [src]="'/assets/img/' + type + '-icon.svg'" width="22px" height="21px">
-          <input class = "form__input" matInput [type]="type" [placeholder]="translation" [formControlName]="controlName" appFocus>
-        </mat-form-field>
-        <mat-form-field *ngIf="controlName !== 'email'" class="form__inputWrapper">
-          <img class="form__icon" [src]="'/assets/img/' + type + '-icon.svg'" width="22px" height="21px">
-          <input class = "form__input" matInput [type]="type" [placeholder]="translation" [formControlName]="controlName">
-        </mat-form-field>
-        <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].value.length > 0">
-          <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
-        </ng-container>
-      </div>
-    </ng-template>
-  </form>
-
+<form #myForm="ngForm" class="form" [formGroup]="form">
+  <ng-container
+    *ngTemplateOutlet="
+      controlTemplate;
+      context: { $implicit: 'email', type: 'email', translation: 'Почта' }
+    "
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="
+      controlTemplate;
+      context: {
+        $implicit: 'password',
+        type: 'password',
+        translation: 'Пароль'
+      }
+    "
+  ></ng-container>
+  <ng-container *ngIf="incorrectAccountError$ | async as noAccountError">
+    <app-error-handler [errors]="noAccountError"></app-error-handler>
+  </ng-container>
+  <button
+    mat-flat-button
+    class="form__signInBtn"
+    [disabled]="form.invalid"
+    color="primary"
+    (click)="signIn()"
+  >
+    Войти
+  </button>
+  <a class="form__link" (click)="redirectToSignUp()">Регистрация</a>
+  <ng-template
+    #controlTemplate
+    let-controlName
+    let-type="type"
+    let-translation="translation"
+  >
+    <div>
+      <mat-form-field
+        *ngIf="controlName === 'email'"
+        class="form__inputWrapper"
+      >
+        <img
+          class="form__icon"
+          [src]="'/assets/img/' + type + '-icon.svg'"
+          width="22px"
+          height="21px"
+        />
+        <input
+          class="form__input"
+          matInput
+          [type]="type"
+          [placeholder]="translation"
+          [formControlName]="controlName"
+          appFocus
+        />
+      </mat-form-field>
+      <mat-form-field
+        *ngIf="controlName !== 'email'"
+        class="form__inputWrapper"
+      >
+        <img
+          class="form__icon"
+          [src]="'/assets/img/' + type + '-icon.svg'"
+          width="22px"
+          height="21px"
+        />
+        <input
+          class="form__input"
+          matInput
+          [type]="type"
+          [placeholder]="translation"
+          [formControlName]="controlName"
+        />
+      </mat-form-field>
+      <ng-container
+        *ngIf="
+          form.controls[controlName].invalid &&
+          form.controls[controlName].value.length > 0
+        "
+      >
+        <app-error-handler
+          [errors]="form.controls[controlName].errors"
+        ></app-error-handler>
+      </ng-container>
+    </div>
+  </ng-template>
+</form>
