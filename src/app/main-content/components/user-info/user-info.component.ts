@@ -7,11 +7,25 @@ import {
 } from '@angular/core';
 import {IUser} from "../../../shared/models/IUser";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BehaviorSubject, delay, filter, map, mergeMap, Observable, skipWhile, Subject, tap} from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  delay,
+  filter,
+  map,
+  mergeMap,
+  Observable,
+  skipWhile,
+  Subject,
+  takeUntil,
+  tap
+} from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
+import {MatDialog} from "@angular/material/dialog";
+import {ModalWindowComponent} from "../modal-window/modal-window.component";
 
 @Component({
   selector: 'app-user-info',
@@ -36,13 +50,16 @@ export class UserInfoComponent implements OnInit, OnDestroy{
   });
 
   public user$?: Observable<IUser>;
+  private user?: IUser;
+  private destroy$ = new Subject<boolean>();
+  public profileInfoHasChanged$ = new BehaviorSubject<boolean>(false);
   public userPropertyKeys: Array<{propName: string, templateName: string}> = [];
   public onEdit$ = new BehaviorSubject(false);
   public salaryItemsArray!: FormArray;
   public salaryRaising: number[] = [];
   private isFirstIteration = true;
-  private getUserForProps$ = new BehaviorSubject<IUser>(null as unknown as  IUser);
   public isLoading$ = new BehaviorSubject<boolean>(true);
+  private imgChanged = false;
 
   @ViewChild("imgInput") imgInput!: ElementRef;
   @ViewChild("imgContainer") imgContainer!: ElementRef;
@@ -52,7 +69,8 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     private router: Router,
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
-    private fbEntities: FbEntitiesService
+    private fbEntities: FbEntitiesService,
+    public dialog: MatDialog
   ) {}
 
   public ngOnInit(): void {
@@ -63,10 +81,19 @@ export class UserInfoComponent implements OnInit, OnDestroy{
           (
             map(users => users.find(u => u.id === params["id"]) as IUser),
             skipWhile(user => !user),
-            tap((user) => this.initialiseUserProps(user) )
+            tap((user) =>{
+              this.initialiseUserProps(user);
+              this.user = user;
+            })
             )
         )
       );
+    this.form.valueChanges
+      .pipe(
+        debounceTime(100),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.valuesHasChanged())
   }
 
   private initialiseUserProps(user: IUser){
@@ -161,7 +188,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
      this.form.get(controlKey)?.setValue(user[controlKey as keyof IUser]);
     }
     this.form.disable();
-    this.imgInput.nativeElement.files = null;
+    this.imgInput.nativeElement.value = null;
     this.imgContainer.nativeElement.src = user.img || 'assets/img/temporary-user.PNG';
   }
 
@@ -179,7 +206,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   private createSalaryFormFromItem(salaryItem: {date: Date, salary: number} = {date: new Date(), salary: 0}){
     return new FormGroup({
-      date: new FormControl(salaryItem.date),
+      date: new FormControl(salaryItem.date, Validators.required),
       salary: new FormControl(salaryItem.salary, [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator])
     });
   }
@@ -191,6 +218,27 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   public uploadImg(){
     this.imgContainer.nativeElement.src = URL.createObjectURL(this.imgInput.nativeElement.files[0]);
+    this.imgChanged = true;
+    this.profileInfoHasChanged$.next(true);
+  }
+
+  public openLeaveDialog(user: IUser){
+    if(!this.profileInfoHasChanged$.value) {
+      this.restoreFieldsChanges(user);
+      return;
+    }
+    const dialogRef = this.dialog.open(ModalWindowComponent, {
+      data: {
+        title: "Изменения не сохранены",
+        text: "Вы действительно хотите выйти из режима редактирования? Все несохранённые изменения будут утеряны",
+        confirmButtonText: "Выйти из режима редактирования",
+        cancelButtonText: "Отмена"
+      }
+    });
+    dialogRef.afterClosed().subscribe(v => {
+      if(v)
+        this.restoreFieldsChanges(user);
+    });
   }
 
   private dissolveLoadingEffect(interval: number){
@@ -200,8 +248,19 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     }, interval);
   }
 
-  public ngOnDestroy(): void {
-    this.getUserForProps$.complete();
+  private valuesHasChanged(){
+    for (const valueProp in this.form.value) {
+      if(JSON.stringify(this.user![valueProp as keyof IUser]) !== JSON.stringify(this.form.value[valueProp])) {
+        console.log(this.user![valueProp as keyof IUser], this.form.value[valueProp]);
+        this.profileInfoHasChanged$.next(true);
+        return;
+      }
+    }
+    this.profileInfoHasChanged$.next(false);
   }
 
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete()
+  }
 }

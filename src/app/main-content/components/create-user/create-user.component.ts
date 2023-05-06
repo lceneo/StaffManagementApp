@@ -5,6 +5,8 @@ import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {Router} from "@angular/router";
 import {IUser} from "../../../shared/models/IUser";
 import {BehaviorSubject} from "rxjs";
+import {MatDialog} from "@angular/material/dialog";
+import {ModalWindowComponent} from "../modal-window/modal-window.component";
 
 @Component({
   selector: 'app-create-user',
@@ -37,7 +39,8 @@ export class CreateUserComponent implements OnInit{
   constructor(
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {}
 
   public ngOnInit(): void {
@@ -82,6 +85,21 @@ export class CreateUserComponent implements OnInit{
 
   public returnToUsersList(){
     this.router.navigate(["users"]);
+  }
+
+  public openLeaveDialog(){
+    const dialogRef = this.dialog.open(ModalWindowComponent, {
+      data: {
+        title: "Пользователь не сохранён",
+        text: "Вы действительно хотите покинуть эту страницу? Все несохранённые изменения будут утеряны",
+        confirmButtonText: "Покинуть страницу",
+        cancelButtonText: "Отмена"
+      }
+    });
+    dialogRef.afterClosed().subscribe(v => {
+      if(v)
+        this.returnToUsersList();
+    });
   }
 
   private getUploadImgTask(user: IUser, imgFile: File){

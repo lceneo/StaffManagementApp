@@ -13,13 +13,13 @@
         <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
           <mat-icon>arrow_back</mat-icon>
         </button>
-      <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "restoreFieldsChanges(user)">
+      <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "openLeaveDialog(user)">
         <mat-icon>arrow_back</mat-icon>
       </button>
       <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()">
         <mat-icon>edit</mat-icon>
       </button>
-        <form class="form" [formGroup]="form">
+        <form class="form" [formGroup]="form" *ngLet="profileInfoHasChanged$ | async as profileInfoHasChanged">
           <ng-container *ngFor="let prop of userPropertyKeys">
             <ng-container *ngIf="prop.templateName === 'defaultTemplate'">
               <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName}"></ng-container>
@@ -47,7 +47,7 @@
               </div>
             </div>
           </div>
-          <button class="form__saveBtn" mat-raised-button color="primary" (click)="updateUserInfo(user, form.value)" [disabled] = "form.invalid" [hidden]="!onEdit">Сохранить информацию</button>
+          <button class="form__saveBtn" mat-raised-button color="primary" (click)="updateUserInfo(user, form.value)" [disabled] = "form.invalid || !profileInfoHasChanged" [hidden]="!onEdit">Сохранить информацию</button>
 
           <ng-template #defaultTemplate let-controlName>
             <div>

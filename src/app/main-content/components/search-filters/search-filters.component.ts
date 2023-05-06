@@ -38,6 +38,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   public resetFilters(){

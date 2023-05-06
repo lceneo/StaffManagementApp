@@ -1,0 +1,28 @@
+.wrapper{
+  display: flex;
+  padding: 10px 20px;
+  padding-bottom: 0px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 180px;
+  color: cornflowerblue;
+  text-align: center;
+  &__text{
+    margin-top: 5px;
+    font-size: 16px;
+    color: grey;
+  }
+  &__buttons{
+    width: 100%;
+    margin-top: 20px;
+  }
+  &__btn{
+    width: 40%;
+  }
+}
+
+.cancelBtn{
+  margin-right: 10px;
+}

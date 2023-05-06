@@ -4,7 +4,7 @@
   </mat-form-field>
   <label>Заработная плата</label>
   <label>От {{filtersGroup.controls.salaryFrom.value}} До {{filtersGroup.controls.salaryTo.value}}</label>
-  <mat-slider min="1000" max="1000000" step="1000" discrete >
+  <mat-slider min="1000" max="1000000" step="1000">
     <input formControlName="salaryFrom" matSliderStartThumb>
     <input formControlName="salaryTo" matSliderEndThumb>
   </mat-slider>

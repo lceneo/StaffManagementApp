@@ -25,6 +25,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {FbEntitiesService} from "../shared/services/fb-entities.service";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { ModalWindowComponent } from './components/modal-window/modal-window.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     SearchFilterPipe,
     UserInfoComponent,
     SearchFiltersComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    ModalWindowComponent
   ],
     imports: [
         CommonModule,
