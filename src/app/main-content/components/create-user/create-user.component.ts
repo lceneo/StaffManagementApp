@@ -19,12 +19,11 @@ export class CreateUserComponent implements OnInit{
     name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
-    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    birthdayDate: new FormControl(new Date(), Validators.required),
+    birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
     salaryHistory: new FormArray([this.getEmptySalaryForm()])
@@ -63,7 +62,12 @@ export class CreateUserComponent implements OnInit{
   public createUser(){
     this.isLoading$.next(true);
     const imgFile = this.imgInput.nativeElement.files[0];
-    const user = {...this.form.value, fired: false, salary: this.salaryHistoryForm.controls[0].value.salary};
+    const user = {
+      ...this.form.value,
+      fired: false,
+      salary: this.salaryHistoryForm.controls[0].value.salary,
+      age: this.calculateAgeFromBirthday(this.form.value.birthdayDate)
+    };
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
         .then((img) => this.fbDb.addUser({...user, img: img}))
@@ -123,5 +127,15 @@ export class CreateUserComponent implements OnInit{
       this.isLoading$.next(false);
       clearTimeout(timer)
     }, interval);
+  }
+
+  private calculateAgeFromBirthday(birthdayDate: Date){
+    const currentDate = new Date();
+    const yearsDistiction = currentDate.getFullYear() - birthdayDate.getFullYear();
+    const monthDistiction = currentDate.getMonth() - birthdayDate.getMonth();
+    if(monthDistiction < 0 || (monthDistiction === 0 && currentDate.getDate() < birthdayDate.getDate()))
+      return yearsDistiction - 1;
+    else
+      return yearsDistiction;
   }
 }

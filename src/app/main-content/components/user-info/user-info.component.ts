@@ -38,12 +38,11 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
-    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    birthdayDate: new FormControl(new Date(), Validators.required),
+    birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
     salaryHistory: new FormArray([])
@@ -133,27 +132,25 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   public updateUserInfo(user: IUser, value: Partial<IUser>){
     this.isLoading$.next(true);
-    const valueWithSalary = {...value, salary: this.salaryItemsArray.controls[0].value.salary}
+    const valueWithSalaryAndAge = {
+      ...value,
+      salary: this.salaryItemsArray.controls[0].value.salary,
+      age: this.calculateAgeFromBirthday(this.form.value.birthdayDate)
+    };
     const imgFile = this.imgInput.nativeElement.files[0];
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
         .then((img) => {
-          this.fbDb.updateUser(user, {...valueWithSalary, img: img})
+          this.fbDb.updateUser(user, {...valueWithSalaryAndAge, img: img})
             .then(() => {
-              this.onEdit$.next(false)
-              this.updateSalaryRaisings();
-              this.form.disable();
-              this.dissolveLoadingEffect(0);
+              this.afterInfoUpdated();
             });
         })
     }
     else {
-      this.fbDb.updateUser(user, {...valueWithSalary})
+      this.fbDb.updateUser(user, {...valueWithSalaryAndAge})
         .then(() => {
-          this.onEdit$.next(false)
-          this.form.disable();
-          this.updateSalaryRaisings();
-          this.dissolveLoadingEffect(0);
+          this.afterInfoUpdated();
         });
     }
   }
@@ -257,6 +254,23 @@ export class UserInfoComponent implements OnInit, OnDestroy{
       }
     }
     this.profileInfoHasChanged$.next(false);
+  }
+
+  private calculateAgeFromBirthday(birthdayDate: Date){
+    const currentDate = new Date();
+    const yearsDistiction = currentDate.getFullYear() - birthdayDate.getFullYear();
+    const monthDistiction = currentDate.getMonth() - birthdayDate.getMonth();
+    if(monthDistiction < 0 || (monthDistiction === 0 && currentDate.getDate() < birthdayDate.getDate()))
+      return yearsDistiction - 1;
+    else
+      return yearsDistiction;
+  }
+
+  private afterInfoUpdated(){
+    this.onEdit$.next(false)
+    this.updateSalaryRaisings();
+    this.form.disable();
+    this.dissolveLoadingEffect(0);
   }
 
   public ngOnDestroy(): void {

@@ -24,6 +24,17 @@ export class CustomValidators{
     return /^[a-zA-Zа-яА-ЯёЁ]+$/.test(control.value) ? null : {onlyLettersValidator: true};
   }
 
+  public static ageValidator(control:AbstractControl){
+    const controlDate = control.value as Date;
+    const currentDate = new Date();
+    const yearsDistiction = currentDate.getFullYear() - controlDate.getFullYear();
+    if(yearsDistiction < 18)
+      return { ageValidator: true };
+    const monthDistiction = currentDate.getMonth() - controlDate.getMonth();
+    return yearsDistiction > 18 ||
+      (monthDistiction > 0 || (monthDistiction === 0 && currentDate.getDate() >= controlDate.getDate())) ? null : { ageValidator: true };
+  }
+
   public static optionalOnlyLettersValidator(control: AbstractControl){
     return /^[a-zA-Zа-яА-ЯёЁ]+$/.test(control.value) || control.value.length === 0 ? null : {onlyLettersValidator: true};
   }
