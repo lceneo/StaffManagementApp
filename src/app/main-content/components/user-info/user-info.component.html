@@ -4,7 +4,10 @@
     <ng-template #usersTemplate>
       <div class="imgWrapper">
         <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
-        <input (change)="uploadImg()" #imgInput type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
+        <button class="btn" mat-flat-button color="primary" (click) = "imgInput.click()" [hidden]="!onEdit">
+          Загрузить изображение
+        </button>
+        <input (change)="uploadImg()" #imgInput id="imgInput" type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
         <button class="btnChangeHireStatus" mat-raised-button [color]="user.fired ? 'primary' : 'warn'" (click)="fireOrHireUser(user)" [hidden]="onEdit">
           {{user.fired ? "Нанять сотрудника" : "Уволить сотрудника"}}
         </button>
