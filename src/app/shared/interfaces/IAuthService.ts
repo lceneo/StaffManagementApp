@@ -6,6 +6,7 @@ export const IAuthServiceToken = new InjectionToken<IAuthService>("Authorization
 
 export interface IAuthService {
   login : (credentials: IAuthCredentials) => Promise<firebase.auth.UserCredential>;
+  signOut : () => void;
   register: (credentials: IAuthCredentials) => Promise<firebase.auth.UserCredential>;
   saveSessionInfo: (sessionInfo: firebase.auth.UserCredential) => void;
   isAuthorized: () => boolean;

@@ -13,6 +13,10 @@ export class FbAuthService implements  IAuthService{
     return this.fbAuth.signInWithEmailAndPassword(credentials.email, credentials.password);
   }
 
+  public signOut(){
+    localStorage.removeItem("session");
+  }
+
   public register(credentials: IAuthCredentials): Promise<firebase.auth.UserCredential>{
    return this.fbAuth.createUserWithEmailAndPassword(credentials.email, credentials.password);
   }

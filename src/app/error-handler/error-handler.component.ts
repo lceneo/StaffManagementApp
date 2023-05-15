@@ -10,11 +10,15 @@ import {ValidationErrors} from "@angular/forms";
 export class ErrorHandlerComponent {
   @Input()
   public set errors(error: ValidationErrors | Error | null) {
+    if(this.previousErrors && JSON.stringify(this.previousErrors) ===  JSON.stringify(error))
+      return;
     this.outErrors = [];
+    this.previousErrors = error;
     this.updateErrors(error);
   };
 
   public outErrors: string[] = [];
+  private previousErrors?: ValidationErrors | Error | null;
 
   private updateErrors(error: ValidationErrors | Error | null) {
     if (!error)

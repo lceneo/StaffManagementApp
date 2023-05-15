@@ -6,7 +6,13 @@
           <mat-slide-toggle [(ngModel)]="isChecked" (change)="changed($event)"
             ></mat-slide-toggle
           >
-
+        <ng-container *ngIf="activatedUrl$ | async as activatedUrl">
+          <button mat-icon-button (click) = "exitFromAccount()" *ngIf="activatedUrl !== '/login' && activatedUrl !== '/registration'"
+                  matTooltip="Выйти"
+          >
+            <mat-icon>exit_to_app</mat-icon>
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>

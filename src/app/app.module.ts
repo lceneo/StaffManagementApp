@@ -17,6 +17,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import {FormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 @NgModule({
@@ -35,9 +37,16 @@ import {MatIconModule} from "@angular/material/icon";
     MatSlideToggleModule,
     MatCardModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule
   ],
-  providers: [],
+  providers: [
+    {
+    provide: IAuthServiceToken,
+    useClass: FbAuthService
+  }
+  ],
   exports: [],
   bootstrap: [AppComponent]
 })
