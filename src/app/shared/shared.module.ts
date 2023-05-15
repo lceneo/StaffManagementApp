@@ -6,18 +6,20 @@ import {LetDirective} from "./directives/ngLet.directive";
 import {MAT_DATE_LOCALE} from "@angular/material/core";
 import {registerLocaleData} from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
+import {ErrorHandlerModule} from "../error-handler/error-handler.module";
 
 registerLocaleData(localeFr);
 
 @NgModule({
   declarations: [
     FocusDirective,
-    LetDirective
+    LetDirective,
   ],
-  imports: [],
+  imports: [ErrorHandlerModule],
   exports: [
     FocusDirective,
-    LetDirective
+    LetDirective,
+    ErrorHandlerModule
   ],
   providers: [
     {

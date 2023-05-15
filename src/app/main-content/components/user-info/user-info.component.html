@@ -58,6 +58,9 @@
                 <mat-label>{{controlName}}</mat-label>
                 <input class = "form__input" matInput type="text" [formControlName]="controlName">
               </mat-form-field>
+              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              </ng-container>
             </div>
           </ng-template>
 
@@ -69,6 +72,9 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
+              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              </ng-container>
             </div>
           </ng-template>
 
@@ -80,6 +86,9 @@
                 <mat-option [value]="'Женский'">Женский</mat-option>
               </mat-select>
             </mat-form-field>
+            <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+              <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+            </ng-container>
           </ng-template>
 
           <ng-template #companyPositionTemplate let-controlName>
@@ -95,21 +104,34 @@
                   <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
                 </mat-select>
               </mat-form-field>
+              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              </ng-container>
             </div>
           </ng-template>
 
           <ng-template #salaryItemTemplate let-control let-index = "index">
             <div class="salaryItem">
-              <mat-form-field class="salaryItem__date" appearance="outline">
-                <mat-label>Укажите дату</mat-label>
-                <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field class="form__inputWrapper" appearance="outline">
-                <mat-label>Укажите зарплату</mat-label>
-                <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
-              </mat-form-field>
+              <div *ngLet="control.get('date') as dateControl">
+                <mat-form-field class="salaryItem__date" appearance="outline">
+                  <mat-label>Укажите дату</mat-label>
+                  <input readonly matInput [matDatepicker]="picker" [formControl]="dateControl">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <ng-container *ngIf="dateControl.invalid && dateControl.touched">
+                  <app-error-handler [errors]="dateControl.errors"></app-error-handler>
+                </ng-container>
+              </div>
+              <div *ngLet="control.get('salary') as salaryControl">
+                <mat-form-field class="form__inputWrapper" appearance="outline">
+                  <mat-label>Укажите зарплату</mat-label>
+                  <input class = "form__input" matInput type="text" [formControl]="salaryControl">
+                </mat-form-field>
+                <ng-container *ngIf="salaryControl.invalid && salaryControl.touched">
+                  <app-error-handler [errors]="salaryControl.errors"></app-error-handler>
+                </ng-container>
+              </div>
                 <img [hidden]="index === salaryRaising.length || onEdit" class="salaryItem__raiseStatus"
                      [src]="salaryRaising[index] > 0 ? 'assets/img/arrow-up-icon.svg' : 'assets/img/arrow-down-icon.svg'" height="30px" width="30px">
                 <span class="salaryItem__raisePercent" [ngClass]="{

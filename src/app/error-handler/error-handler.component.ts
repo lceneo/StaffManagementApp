@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ValidationErrors} from "@angular/forms";
 
 @Component({
@@ -7,34 +7,57 @@ import {ValidationErrors} from "@angular/forms";
   styleUrls: ['./error-handler.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ErrorHandlerComponent implements OnInit{
-  @Input() errors?: ValidationErrors | Error | null;
-  public errorText: string = "";
+export class ErrorHandlerComponent {
+  @Input()
+  public set errors(error: ValidationErrors | Error | null) {
+    this.outErrors = [];
+    this.updateErrors(error);
+  };
 
-  public ngOnInit(): void {
-    if(!this.errors)
+  public outErrors: string[] = [];
+
+  private updateErrors(error: ValidationErrors | Error | null) {
+    if (!error)
       return;
-    else if(this.errors instanceof Error){
-      this.errorText = this.errors.message;
+    else if (error instanceof Error) {
+      this.outErrors.push(error.message)
       return;
     }
-    const errorsObj = this.errors as ValidationErrors;
+    const errorsObj = error as ValidationErrors;
     for (const err in errorsObj) {
-      switch (err){
+      switch (err) {
         case "required":
-          this.errorText = "Обязательное поле"
+          this.outErrors.push("Обязательное поле");
           break;
         case "minlength":
-          this.errorText = `Минимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`
+          this.outErrors.push(`Минимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`);
           break;
         case "maxlength":
-          this.errorText = `Максимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`
+          this.outErrors.push(`Максимальная длина пароля — ${errorsObj[err].requiredLength} cимволов`);
+          break;
+        case "min":
+          this.outErrors.push(`Минимальная зарплата — ${errorsObj[err].min} RUB`);
+          break;
+        case "max":
+          this.outErrors.push(`Максимальная зарплата — ${errorsObj[err].max} RUB`);
           break;
         case "emailValidator" :
-          this.errorText = "Некорректный формат email"
+          this.outErrors.push("Некорректный формат email");
           break;
         case "passwordsMismatch" :
-          this.errorText = "Пароли не совпадают"
+          this.outErrors.push("Пароли не совпадают");
+          break;
+        case "onlyLettersValidator" :
+          this.outErrors.push("Должно содержать только буквы");
+          break;
+        case "onlyDigitsValidator" :
+          this.outErrors.push("Должно содержать только цифры");
+          break
+        case "spaceValidator" :
+          this.outErrors.push("Не должно содержать пробелов");
+          break;
+        case "ageValidator" :
+          this.outErrors.push("Минимальный возраст — 18 лет");
           break;
       }
     }

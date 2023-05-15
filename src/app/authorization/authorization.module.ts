@@ -16,14 +16,13 @@ import {SharedModule} from "../shared/shared.module";
     RegistrationComponent
   ],
   imports: [
-    ErrorHandlerModule,
+    SharedModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    SharedModule
   ],
   exports:[
     LoginComponent,

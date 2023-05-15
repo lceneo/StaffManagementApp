@@ -26,6 +26,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {FbEntitiesService} from "../shared/services/fb-entities.service";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { ModalWindowComponent } from './components/modal-window/modal-window.component';
+import {ErrorHandlerModule} from "../error-handler/error-handler.module";
 
 
 @NgModule({
@@ -37,28 +38,28 @@ import { ModalWindowComponent } from './components/modal-window/modal-window.com
     CreateUserComponent,
     ModalWindowComponent
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        NgxPaginationModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSliderModule,
-        MatSelectModule,
-        FormsModule,
-        MatCardModule,
-        RouterModule.forChild([
-            {path: "", component: UsersListComponent},
-            {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
-            {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
-        ]),
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    NgxPaginationModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSliderModule,
+    MatSelectModule,
+    FormsModule,
+    MatCardModule,
+    RouterModule.forChild([
+      {path: "", component: UsersListComponent},
+      {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
+      {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
+    ]),
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule
+  ],
   providers: [
     {
       provide: IUserDbServiceToken,

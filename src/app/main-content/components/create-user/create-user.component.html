@@ -10,6 +10,9 @@
           <mat-label>{{controlName}}</mat-label>
           <input class = "form__input" matInput [formControlName]="controlName">
         </mat-form-field>
+        <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+          <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+        </ng-container>
       </div>
     </ng-template>
 
@@ -22,6 +25,9 @@
               <mat-option [value]="'Женский'">Женский</mat-option>
             </mat-select>
           </mat-form-field>
+          <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+            <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+          </ng-container>
         </div>
       </ng-template>
 
@@ -38,6 +44,9 @@
               <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
             </mat-select>
           </mat-form-field>
+          <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+            <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+          </ng-container>
         </div>
       </ng-template>
 
@@ -49,21 +58,34 @@
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+        <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
+          <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+        </ng-container>
       </div>
     </ng-template>
 
     <ng-template #salaryHistoryTemplate let-control let-index = "index">
       <div class="salaryItem">
-        <mat-form-field class="salaryItem__date" appearance="outline">
-          <mat-label>Укажите дату</mat-label>
-          <input readonly matInput [matDatepicker]="picker" [formControl]="control.get('date')">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="form__inputWrapper" appearance="outline">
-          <mat-label>Укажите зарплату</mat-label>
-          <input class = "form__input" matInput type="text"  [formControl]="control.get('salary')">
-        </mat-form-field>
+        <div *ngLet="control.get('date') as dateControl">
+          <mat-form-field class="salaryItem__date" appearance="outline">
+            <mat-label>Укажите дату</mat-label>
+            <input readonly matInput [matDatepicker]="picker" [formControl]="dateControl">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <ng-container *ngIf="dateControl.invalid && dateControl.touched">
+            <app-error-handler [errors]="dateControl.errors"></app-error-handler>
+          </ng-container>
+        </div>
+        <div *ngLet="control.get('salary') as salaryControl">
+          <mat-form-field class="form__inputWrapper" appearance="outline">
+            <mat-label>Укажите зарплату</mat-label>
+            <input class = "form__input" matInput type="text"  [formControl]="salaryControl">
+          </mat-form-field>
+          <ng-container *ngIf="salaryControl.invalid && salaryControl.touched">
+            <app-error-handler [errors]="salaryControl.errors"></app-error-handler>
+          </ng-container>
+        </div>
         <button mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryHistoryForm.length === 1">
           <mat-icon>delete</mat-icon>
         </button>
