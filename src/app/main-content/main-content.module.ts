@@ -52,9 +52,8 @@ import {ErrorHandlerModule} from "../error-handler/error-handler.module";
     FormsModule,
     MatCardModule,
     RouterModule.forChild([
-      {path: "", component: UsersListComponent},
-      {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
-      {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
+      { path: "", component: UsersListComponent },
+      { path: "create", component: CreateUserComponent, canActivate: [authGuard] },
     ]),
     MatDatepickerModule,
     MatNativeDateModule,

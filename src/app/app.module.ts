@@ -19,11 +19,12 @@ import {FormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {SharedModule} from "./shared/shared.module";
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     AuthorizationModule,
@@ -39,7 +40,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     FormsModule,
     MatIconModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SharedModule
   ],
   providers: [
     {

@@ -1,5 +1,8 @@
 <div class="wrapper" *ngLet="user$ | async as user">
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
+    <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
     <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
     <ng-template #usersTemplate>
       <div class="imgWrapper">
@@ -13,9 +16,6 @@
         </button>
       </div>
       <div>
-        <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
       <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "openLeaveDialog(user)">
         <mat-icon>arrow_back</mat-icon>
       </button>

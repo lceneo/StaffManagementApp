@@ -1,8 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {IAuthService, IAuthServiceToken} from "./shared/interfaces/IAuthService";
-import {NavigationStart, Router} from "@angular/router";
-import {BehaviorSubject, filter, map, tap} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -14,25 +13,16 @@ export class AppComponent implements OnInit{
   public isChecked: boolean = false;
   public mode: string = 'light_mode';
   public title = 'staff-management';
-  public activatedUrl$ = new BehaviorSubject<string>(this.router.url);
 
   constructor(
     @Inject(IAuthServiceToken)
-    private authS: IAuthService,
+    public authS: IAuthService,
     private router: Router
   ) {}
 
 
   public ngOnInit(): void {
    this.initTheme();
-    this.router.events
-      .pipe(
-        filter(event => event instanceof NavigationStart),
-        map(event => (event as NavigationStart).url)
-      )
-      .subscribe(
-        url => this.activatedUrl$.next(url)
-      );
   }
 
   private initTheme(){

@@ -94,8 +94,6 @@ export class UserInfoComponent implements OnInit, OnDestroy{
   }
 
   private initialiseUserProps(user: IUser){
-    if(!user)
-      return;
     if(!this.isFirstIteration)
       return;
     this.isFirstIteration = false;
