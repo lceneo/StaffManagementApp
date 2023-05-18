@@ -85,9 +85,10 @@ export class UsersListComponent implements OnInit{
 
   public updateFilter(newFilter: IUserFilters){
     this.filters$.next(newFilter);
-    if(!this.listStateS.getState())
+    if(!this.listStateS.getState()) {
       this.currentPage = 1;
-    this.updateQueryParams();
+      this.updateQueryParams();
+    }
   }
 
   public changePage(newPage: number){
