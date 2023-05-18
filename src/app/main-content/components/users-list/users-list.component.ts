@@ -1,17 +1,9 @@
 import {ChangeDetectionStrategy, Component, inject, Inject, OnInit,} from '@angular/core';
-import { IUser, IUserFilters} from "../../../shared/models/IUser";
+import {IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {
   BehaviorSubject,
-  debounceTime,
-  interval,
-  map,
-  mapTo,
-  Observable,
-  range,
   skipWhile,
-  startWith,
-  take,
   tap
 } from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -41,6 +33,7 @@ export class UsersListComponent{
   public currentPage = 1;
   public itemsPerPage = 5;
   public filters$ = new BehaviorSubject<IUserFilters>(null as unknown as IUserFilters);
+  public savedFilters?: IUserFilters;
 
   constructor(
     @Inject(IUserDbServiceToken)
@@ -69,6 +62,7 @@ export class UsersListComponent{
     this.isLoading$.next(true);
     this.dissolveLoadingEffect(250);
     this.currentPage = newPage;
+    this.savedFilters = JSON.parse(JSON.stringify(this.filters$.value));
   }
 
 }

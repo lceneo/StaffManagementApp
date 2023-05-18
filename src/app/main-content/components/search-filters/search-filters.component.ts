@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {CompanyPosition, Gender, IUserFilters} from "../../../shared/models/IUser";
 import {FormControl, FormGroup} from "@angular/forms";
@@ -23,11 +23,19 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
     fired: new FormControl(false)
   });
 
-  @Output() public filters$ = new BehaviorSubject<IUserFilters>(JSON.parse(JSON.stringify(this.filtersGroup.value)));
+  @Input() public savedFilters?: IUserFilters;
+  @Output() public filters$ = new EventEmitter<IUserFilters>();
+
   private destroy$ = new Subject<boolean>();
 
   ngOnInit(): void {
     this.initialFilters = JSON.parse(JSON.stringify(this.filtersGroup.value));
+    if(this.savedFilters){
+      this.filtersGroup.setValue(this.savedFilters);
+    }
+    else{
+      this.filters$.next(this.filtersGroup.value as IUserFilters)
+    }
     this.filtersGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),
