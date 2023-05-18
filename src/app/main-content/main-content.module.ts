@@ -26,7 +26,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {FbEntitiesService} from "../shared/services/fb-entities.service";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { ModalWindowComponent } from './components/modal-window/modal-window.component';
-import {ErrorHandlerModule} from "../error-handler/error-handler.module";
+import {ListStateSaveService} from "./services/list-state-save.service";
 
 
 @NgModule({
@@ -54,6 +54,7 @@ import {ErrorHandlerModule} from "../error-handler/error-handler.module";
     RouterModule.forChild([
       { path: "", component: UsersListComponent },
       { path: "create", component: CreateUserComponent, canActivate: [authGuard] },
+      { path: ":id", component: UserInfoComponent, canActivate: [authGuard]}
     ]),
     MatDatepickerModule,
     MatNativeDateModule,
@@ -68,7 +69,8 @@ import {ErrorHandlerModule} from "../error-handler/error-handler.module";
       provide: UsersToken,
       useFactory: fbDataTransformationFn
     },
-    FbEntitiesService
+    FbEntitiesService,
+    ListStateSaveService
   ],
   exports:[]
 })
