@@ -12,7 +12,7 @@
         </button>
         <ul class="users__list" *ngLet="users | searchFilter: searchFilters  as filteredUsers">
             <li class="users__item" *ngFor="let user of filteredUsers | searchFilter: searchFilters
-             | paginate: {itemsPerPage: itemsPerPage, currentPage: filteredUsers.length > itemsPerPage ? currentPage : 1}">
+             | paginate: {itemsPerPage: itemsPerPage, currentPage: currentPage}">
               <mat-card class="users__card" [ngClass]="{
                  'users__card-successfulWorker': user.lastPromotion === 'Успешный',
                  'users__card-unsuccessfulWorker': user.lastPromotion === 'Неуспешный'
@@ -37,7 +37,7 @@
             </li>
         </ul>
       </div>
-      <app-search-filters class="users__filters" [savedFilters]="savedFilters" (filters$)="filters$.next($event)"></app-search-filters>
+      <app-search-filters class="users__filters" [savedFilters]="savedFilters" (filters$)="updateFilter($event)"></app-search-filters>
     </div>
     <pagination-controls class="users__paginator" (pageChange)="changePage($event)" previousLabel = "" nextLabel= "">
     </pagination-controls>

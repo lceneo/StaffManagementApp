@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnIn
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {CompanyPosition, Gender, IUserFilters} from "../../../shared/models/IUser";
 import {FormControl, FormGroup} from "@angular/forms";
+import {ListStateSaveService} from "../../services/list-state-save.service";
 
 @Component({
   selector: 'app-search-filters',
@@ -28,14 +29,22 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
 
   private destroy$ = new Subject<boolean>();
 
-  ngOnInit(): void {
+  constructor(
+    private listStateS: ListStateSaveService
+  ) {}
+
+  public ngOnInit(): void {
     this.initialFilters = JSON.parse(JSON.stringify(this.filtersGroup.value));
-    if(this.savedFilters){
+    const listStateFilters = this.listStateS.getState()?.filters
+    if(listStateFilters){
+      this.filtersGroup.setValue(listStateFilters);
+      this.filters$.next(listStateFilters);
+      this.listStateS.resetState();
+    }
+    else if(this.savedFilters)
       this.filtersGroup.setValue(this.savedFilters);
-    }
-    else{
+    else
       this.filters$.next(this.filtersGroup.value as IUserFilters)
-    }
     this.filtersGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),

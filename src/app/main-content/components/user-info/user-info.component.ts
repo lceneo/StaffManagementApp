@@ -24,6 +24,7 @@ import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {MatDialog} from "@angular/material/dialog";
 import {ModalWindowComponent} from "../modal-window/modal-window.component";
+import {ListStateSaveService} from "../../services/list-state-save.service";
 
 @Component({
   selector: 'app-user-info',
@@ -67,6 +68,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
     private fbEntities: FbEntitiesService,
+    private listStateS: ListStateSaveService,
     public dialog: MatDialog
   ) {}
 
@@ -186,7 +188,15 @@ export class UserInfoComponent implements OnInit, OnDestroy{
   }
 
   public returnToUsersList(){
-    this.router.navigate(["users"]);
+    const savedListState = this.listStateS.getState();
+    if(savedListState) {
+      this.router.navigate(["users"], {
+        queryParams: {page: savedListState.page}
+      });
+    }
+    else {
+      this.router.navigate(["users"]);
+    }
   }
 
   public removeSalaryHistoryItem(index: number){

@@ -52,7 +52,7 @@ import {ListStateSaveService} from "./services/list-state-save.service";
     FormsModule,
     MatCardModule,
     RouterModule.forChild([
-      { path: "", component: UsersListComponent },
+      { path: "", component: UsersListComponent, pathMatch: "full" },
       { path: "create", component: CreateUserComponent, canActivate: [authGuard] },
       { path: ":id", component: UserInfoComponent, canActivate: [authGuard]}
     ]),

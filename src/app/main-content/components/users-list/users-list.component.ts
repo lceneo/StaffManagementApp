@@ -1,13 +1,14 @@
-import {ChangeDetectionStrategy, Component, inject, Inject, OnInit,} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Inject, OnInit,} from '@angular/core';
 import {IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {
   BehaviorSubject,
-  skipWhile,
+  skipWhile, take,
   tap
 } from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
+import {ListStateSaveService} from "../../services/list-state-save.service";
 
 @Component({
   selector: 'app-users-list',
@@ -15,7 +16,7 @@ import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
   styleUrls: ['./users-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UsersListComponent{
+export class UsersListComponent implements OnInit{
 
   public isLoading$ =  new BehaviorSubject<boolean>(true);
   private isFirstIteration = true;
@@ -39,8 +40,17 @@ export class UsersListComponent{
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private listStateS: ListStateSaveService
   ) {}
+
+  public ngOnInit(): void {
+    this.route.queryParams
+      .pipe(
+        take(1)
+      )
+      .subscribe(params => this.currentPage = Number(params["page"]));
+  }
 
 
   public openCreateUserDialog(){
@@ -48,6 +58,10 @@ export class UsersListComponent{
   }
 
   public openUserDetailedInfo(userId: string){
+    this.listStateS.setState({
+      page: this.currentPage,
+      filters: this.filters$.value
+    });
     this.router.navigate([userId], {relativeTo: this.route });
   }
 
@@ -58,11 +72,29 @@ export class UsersListComponent{
     }, interval);
   }
 
+  private updateQueryParams(){
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: {
+          page: this.currentPage
+        },
+      });
+  }
+
+  public updateFilter(newFilter: IUserFilters){
+    this.filters$.next(newFilter);
+    if(!this.listStateS.getState())
+      this.currentPage = 1;
+    this.updateQueryParams();
+  }
+
   public changePage(newPage: number){
     this.isLoading$.next(true);
     this.dissolveLoadingEffect(250);
     this.currentPage = newPage;
-    this.savedFilters = JSON.parse(JSON.stringify(this.filters$.value));
+    this.savedFilters = this.filters$.value;
+    this.updateQueryParams();
   }
-
 }
