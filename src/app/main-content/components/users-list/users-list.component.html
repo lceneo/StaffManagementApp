@@ -7,7 +7,8 @@
   <section class="users">
     <div class="wrapper">
       <div class="users__info" *ngLet="filters$ | async as searchFilters">
-        <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()">
+        <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()"
+          matTooltip="Добавить сотрудника">
           <mat-icon>add</mat-icon>
         </button>
         <ul class="users__list" *ngLet="users | searchFilter: searchFilters  as filteredUsers">

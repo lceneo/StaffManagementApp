@@ -25,7 +25,7 @@ export const fbDataTransformationFn = () => {
         const currentDate = Date.now();
         const intervalBetweenPromotionAndCurrentDate = Math.floor((currentDate - recentPromotionDate) / (1000 * 3600 * 24));
         if(intervalBetweenPromotionAndCurrentDate <= 89 && user.salaryHistory.length > 1)
-            user.lastPromotion = recentPromotion.salary > user.salaryHistory[1].salary ? Promotion.Successful : Promotion.Unsuccessful;
+            user.lastPromotion = Number(recentPromotion.salary) > Number(user.salaryHistory[1].salary) ? Promotion.Successful : Promotion.Unsuccessful;
         else if(intervalBetweenPromotionAndCurrentDate > 182)
           user.lastPromotion = Promotion.Unsuccessful;
         else

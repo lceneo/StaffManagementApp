@@ -4,6 +4,7 @@
       <div class="header__toggle">
         <mat-icon>{{ mode }}</mat-icon>
           <mat-slide-toggle [(ngModel)]="isChecked" (change)="changed($event)"
+                  matTooltip="Сменить тему"
             ></mat-slide-toggle
           >
           <button mat-icon-button (click) = "exitFromAccount()" *ngIf="authS.isAuthorized$ | async"

@@ -11,9 +11,9 @@
 }
 
 .editBtn, .restoreBtn{
-  position: absolute;
-  top: 50px;
-  right: 600px;
+  position: relative;
+  left: 180px;
+  bottom: 20px;
 }
 
 .returnBtn{
@@ -58,6 +58,9 @@
     &-down{
       color: red;
     }
+  }
+  &__zeroPercent{
+    padding-left: 38px;
   }
 }
 

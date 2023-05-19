@@ -1,6 +1,7 @@
 <div class="wrapper" *ngLet="user$ | async as user">
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
-    <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit">
+    <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit"
+            matTooltip="К списку">
       <mat-icon>arrow_back</mat-icon>
     </button>
     <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
@@ -16,12 +17,14 @@
         </button>
       </div>
       <div>
-      <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "openLeaveDialog(user)">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()">
-        <mat-icon>edit</mat-icon>
-      </button>
+        <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "openLeaveDialog(user)"
+                matTooltip="Выйти из режима редактирования">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()"
+                matTooltip="Редактировать">
+          <mat-icon>edit</mat-icon>
+        </button>
         <form class="form" [formGroup]="form" *ngLet="profileInfoHasChanged$ | async as profileInfoHasChanged">
           <ng-container *ngFor="let prop of userPropertyKeys">
             <ng-container *ngIf="prop.templateName === 'defaultTemplate'">
@@ -132,12 +135,14 @@
                   <app-error-handler [errors]="salaryControl.errors"></app-error-handler>
                 </ng-container>
               </div>
-                <img [hidden]="index === salaryRaising.length || onEdit" class="salaryItem__raiseStatus"
-                     [src]="salaryRaising[index] > 0 ? 'assets/img/arrow-up-icon.svg' : 'assets/img/arrow-down-icon.svg'" height="30px" width="30px">
+                <img [hidden]="index === salaryRaising.length || onEdit || salaryRaising[index] === 0" class="salaryItem__raiseStatus"
+                     [src]="salaryRaising[index] > 0 ? 'assets/img/arrow-up-icon.svg' : 'assets/img/arrow-down-icon.svg'"
+                     height="30px" width="30px">
                 <span class="salaryItem__raisePercent" [ngClass]="{
                     'salaryItem__raisePercent-up': salaryRaising[index] > 0,
-                    'salaryItem__raisePercent-down': salaryRaising[index] < 0
-                }" [hidden]="index === salaryRaising.length || onEdit">{{salaryRaising[index]}}</span>
+                    'salaryItem__raisePercent-down': salaryRaising[index] < 0,
+                    'salaryItem__zeroPercent' : salaryRaising[index] === 0
+                }" [hidden]="index === salaryRaising.length || onEdit">{{salaryRaising[index] + "%"}}</span>
               <button [hidden]="!onEdit" mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryItemsArray.controls.length === 1">
                 <mat-icon>delete</mat-icon>
               </button>

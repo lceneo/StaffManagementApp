@@ -27,6 +27,7 @@ import {FbEntitiesService} from "../shared/services/fb-entities.service";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { ModalWindowComponent } from './components/modal-window/modal-window.component';
 import {ListStateSaveService} from "./services/list-state-save.service";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 @NgModule({
@@ -52,13 +53,14 @@ import {ListStateSaveService} from "./services/list-state-save.service";
     FormsModule,
     MatCardModule,
     RouterModule.forChild([
-      { path: "", component: UsersListComponent, pathMatch: "full" },
-      { path: "create", component: CreateUserComponent, canActivate: [authGuard] },
-      { path: ":id", component: UserInfoComponent, canActivate: [authGuard]}
+      {path: "", component: UsersListComponent, pathMatch: "full"},
+      {path: "create", component: CreateUserComponent, canActivate: [authGuard]},
+      {path: ":id", component: UserInfoComponent, canActivate: [authGuard]}
     ]),
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ],
   providers: [
     {

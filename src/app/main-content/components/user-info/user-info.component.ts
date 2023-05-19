@@ -20,7 +20,7 @@ import {
 } from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
+import {FbEntitiesService, initialUsersState} from "../../../shared/services/fb-entities.service";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {MatDialog} from "@angular/material/dialog";
 import {ModalWindowComponent} from "../modal-window/modal-window.component";
@@ -78,9 +78,14 @@ export class UserInfoComponent implements OnInit, OnDestroy{
         mergeMap(params => this.fbEntities.users$
           .pipe
           (
-            map(users => users.find(u => u.id === params["id"]) as IUser),
-            skipWhile(user => !user),
-            tap((user) =>{
+            map(users => [users.find(u => u.id === params["id"]), users === initialUsersState] as [IUser, boolean]),
+            skipWhile(([user, isInitialState]) => isInitialState),
+            map(([user, isInitial]) => user),
+            tap(user =>{
+              if(!user){
+                this.router.navigate(["unknown-page"]);
+                return;
+              }
               this.initialiseUserProps(user);
               this.user = user;
             })
