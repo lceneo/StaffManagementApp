@@ -20,11 +20,12 @@ export class UsersListComponent implements OnInit{
 
   public isLoading$ =  new BehaviorSubject<boolean>(true);
   private isFirstIteration = true;
+  private routingIsTriggeredFromQuery = true;
 
   public users$ = inject(FbEntitiesService).users$
                                             .pipe(
                                               skipWhile(users => !users),
-                                              tap(() => {
+                                              tap((us) => {
                                                 if(this.isFirstIteration){
                                                   this.dissolveLoadingEffect(250);
                                                   this.isFirstIteration = false;
@@ -85,10 +86,12 @@ export class UsersListComponent implements OnInit{
 
   public updateFilter(newFilter: IUserFilters){
     this.filters$.next(newFilter);
-    if(!this.listStateS.getState()) {
+    if(!this.listStateS.getState() && !this.routingIsTriggeredFromQuery) {
       this.currentPage = 1;
       this.updateQueryParams();
     }
+    else
+      this.routingIsTriggeredFromQuery = false;
   }
 
   public changePage(newPage: number){
