@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Inject, OnInit,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, Inject, OnInit,} from '@angular/core';
 import {IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {
@@ -25,7 +25,7 @@ export class UsersListComponent implements OnInit{
   public users$ = inject(FbEntitiesService).users$
                                             .pipe(
                                               skipWhile(users => !users),
-                                              tap((us) => {
+                                              tap(() => {
                                                 if(this.isFirstIteration){
                                                   this.dissolveLoadingEffect(250);
                                                   this.isFirstIteration = false;
