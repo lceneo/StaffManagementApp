@@ -7,11 +7,24 @@ import {
 } from '@angular/core';
 import {IUser} from "../../../shared/models/IUser";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BehaviorSubject, delay, filter, map, mergeMap, Observable, skipWhile, Subject, tap} from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  map,
+  mergeMap,
+  Observable,
+  skipWhile,
+  Subject,
+  takeUntil,
+  tap
+} from "rxjs";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
+import {FbEntitiesService, initialUsersState} from "../../../shared/services/fb-entities.service";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
+import {MatDialog} from "@angular/material/dialog";
+import {ModalWindowComponent} from "../modal-window/modal-window.component";
+import {ListStateSaveService} from "../../services/list-state-save.service";
 
 @Component({
   selector: 'app-user-info',
@@ -24,25 +37,27 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
-    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    birthdayDate: new FormControl(new Date(), Validators.required),
+    birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
     salaryHistory: new FormArray([])
   });
 
   public user$?: Observable<IUser>;
+  private user?: IUser;
+  private destroy$ = new Subject<boolean>();
+  public profileInfoHasChanged$ = new BehaviorSubject<boolean>(false);
   public userPropertyKeys: Array<{propName: string, templateName: string}> = [];
   public onEdit$ = new BehaviorSubject(false);
   public salaryItemsArray!: FormArray;
   public salaryRaising: number[] = [];
   private isFirstIteration = true;
-  private getUserForProps$ = new BehaviorSubject<IUser>(null as unknown as  IUser);
   public isLoading$ = new BehaviorSubject<boolean>(true);
+  private imgChanged = false;
 
   @ViewChild("imgInput") imgInput!: ElementRef;
   @ViewChild("imgContainer") imgContainer!: ElementRef;
@@ -52,7 +67,9 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     private router: Router,
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
-    private fbEntities: FbEntitiesService
+    private fbEntities: FbEntitiesService,
+    private listStateS: ListStateSaveService,
+    public dialog: MatDialog
   ) {}
 
   public ngOnInit(): void {
@@ -61,17 +78,29 @@ export class UserInfoComponent implements OnInit, OnDestroy{
         mergeMap(params => this.fbEntities.users$
           .pipe
           (
-            map(users => users.find(u => u.id === params["id"]) as IUser),
-            skipWhile(user => !user),
-            tap((user) => this.initialiseUserProps(user) )
+            map(users => [users.find(u => u.id === params["id"]), users === initialUsersState] as [IUser, boolean]),
+            skipWhile(([user, isInitialState]) => isInitialState),
+            map(([user, isInitial]) => user),
+            tap(user =>{
+              if(!user){
+                this.router.navigate(["unknown-page"]);
+                return;
+              }
+              this.initialiseUserProps(user);
+              this.user = user;
+            })
             )
         )
       );
+    this.form.valueChanges
+      .pipe(
+        debounceTime(100),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.valuesHasChanged())
   }
 
   private initialiseUserProps(user: IUser){
-    if(!user)
-      return;
     if(!this.isFirstIteration)
       return;
     this.isFirstIteration = false;
@@ -106,27 +135,25 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   public updateUserInfo(user: IUser, value: Partial<IUser>){
     this.isLoading$.next(true);
-    const valueWithSalary = {...value, salary: this.salaryItemsArray.controls[0].value.salary}
+    const valueWithSalaryAndAge = {
+      ...value,
+      salary: this.salaryItemsArray.controls[0].value.salary,
+      age: this.calculateAgeFromBirthday(this.form.value.birthdayDate)
+    };
     const imgFile = this.imgInput.nativeElement.files[0];
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
         .then((img) => {
-          this.fbDb.updateUser(user, {...valueWithSalary, img: img})
+          this.fbDb.updateUser(user, {...valueWithSalaryAndAge, img: img})
             .then(() => {
-              this.onEdit$.next(false)
-              this.updateSalaryRaisings();
-              this.form.disable();
-              this.dissolveLoadingEffect(0);
+              this.afterInfoUpdated();
             });
         })
     }
     else {
-      this.fbDb.updateUser(user, {...valueWithSalary})
+      this.fbDb.updateUser(user, {...valueWithSalaryAndAge})
         .then(() => {
-          this.onEdit$.next(false)
-          this.form.disable();
-          this.updateSalaryRaisings();
-          this.dissolveLoadingEffect(0);
+          this.afterInfoUpdated();
         });
     }
   }
@@ -161,12 +188,20 @@ export class UserInfoComponent implements OnInit, OnDestroy{
      this.form.get(controlKey)?.setValue(user[controlKey as keyof IUser]);
     }
     this.form.disable();
-    this.imgInput.nativeElement.files = null;
+    this.imgInput.nativeElement.value = null;
     this.imgContainer.nativeElement.src = user.img || 'assets/img/temporary-user.PNG';
   }
 
   public returnToUsersList(){
-    this.router.navigate(["users"]);
+    const savedListState = this.listStateS.getState();
+    if(savedListState) {
+      this.router.navigate(["users"], {
+        queryParams: {page: savedListState.page}
+      });
+    }
+    else {
+      this.router.navigate(["users"]);
+    }
   }
 
   public removeSalaryHistoryItem(index: number){
@@ -179,7 +214,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   private createSalaryFormFromItem(salaryItem: {date: Date, salary: number} = {date: new Date(), salary: 0}){
     return new FormGroup({
-      date: new FormControl(salaryItem.date),
+      date: new FormControl(salaryItem.date, Validators.required),
       salary: new FormControl(salaryItem.salary, [Validators.required, Validators.min(1000), Validators.max(1000000), CustomValidators.onlyDigitsValidator])
     });
   }
@@ -191,6 +226,27 @@ export class UserInfoComponent implements OnInit, OnDestroy{
 
   public uploadImg(){
     this.imgContainer.nativeElement.src = URL.createObjectURL(this.imgInput.nativeElement.files[0]);
+    this.imgChanged = true;
+    this.profileInfoHasChanged$.next(true);
+  }
+
+  public openLeaveDialog(user: IUser){
+    if(!this.profileInfoHasChanged$.value) {
+      this.restoreFieldsChanges(user);
+      return;
+    }
+    const dialogRef = this.dialog.open(ModalWindowComponent, {
+      data: {
+        title: "Изменения не сохранены",
+        text: "Вы действительно хотите выйти из режима редактирования? Все несохранённые изменения будут утеряны",
+        confirmButtonText: "Выйти из режима редактирования",
+        cancelButtonText: "Отмена"
+      }
+    });
+    dialogRef.afterClosed().subscribe(v => {
+      if(v)
+        this.restoreFieldsChanges(user);
+    });
   }
 
   private dissolveLoadingEffect(interval: number){
@@ -200,8 +256,36 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     }, interval);
   }
 
-  public ngOnDestroy(): void {
-    this.getUserForProps$.complete();
+  private valuesHasChanged(){
+    for (const valueProp in this.form.value) {
+      if(JSON.stringify(this.user![valueProp as keyof IUser]) !== JSON.stringify(this.form.value[valueProp])) {
+        console.log(this.user![valueProp as keyof IUser], this.form.value[valueProp]);
+        this.profileInfoHasChanged$.next(true);
+        return;
+      }
+    }
+    this.profileInfoHasChanged$.next(false);
   }
 
+  private calculateAgeFromBirthday(birthdayDate: Date){
+    const currentDate = new Date();
+    const yearsDistiction = currentDate.getFullYear() - birthdayDate.getFullYear();
+    const monthDistiction = currentDate.getMonth() - birthdayDate.getMonth();
+    if(monthDistiction < 0 || (monthDistiction === 0 && currentDate.getDate() < birthdayDate.getDate()))
+      return yearsDistiction - 1;
+    else
+      return yearsDistiction;
+  }
+
+  private afterInfoUpdated(){
+    this.onEdit$.next(false)
+    this.updateSalaryRaisings();
+    this.form.disable();
+    this.dissolveLoadingEffect(0);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete()
+  }
 }

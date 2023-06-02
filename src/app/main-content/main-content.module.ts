@@ -25,6 +25,9 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {FbEntitiesService} from "../shared/services/fb-entities.service";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { ModalWindowComponent } from './components/modal-window/modal-window.component';
+import {ListStateSaveService} from "./services/list-state-save.service";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 @NgModule({
@@ -33,30 +36,32 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     SearchFilterPipe,
     UserInfoComponent,
     SearchFiltersComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    ModalWindowComponent
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        NgxPaginationModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSliderModule,
-        MatSelectModule,
-        FormsModule,
-        MatCardModule,
-        RouterModule.forChild([
-            {path: "", component: UsersListComponent},
-            {path: "users/:id", component: UserInfoComponent, canActivate: [authGuard]},
-            {path: "create", component: CreateUserComponent, canActivate: [authGuard]}
-        ]),
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    NgxPaginationModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSliderModule,
+    MatSelectModule,
+    FormsModule,
+    MatCardModule,
+    RouterModule.forChild([
+      {path: "", component: UsersListComponent, pathMatch: "full"},
+      {path: "create", component: CreateUserComponent, canActivate: [authGuard]},
+      {path: ":id", component: UserInfoComponent, canActivate: [authGuard]}
+    ]),
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule
+  ],
   providers: [
     {
       provide: IUserDbServiceToken,
@@ -66,7 +71,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
       provide: UsersToken,
       useFactory: fbDataTransformationFn
     },
-    FbEntitiesService
+    FbEntitiesService,
+    ListStateSaveService
   ],
   exports:[]
 })

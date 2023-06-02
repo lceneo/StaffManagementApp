@@ -10,7 +10,6 @@ import {AuthorizationModule} from "./authorization/authorization.module";
 import {FbAuthService} from "./shared/services/fb-auth.service";
 import {IAuthServiceToken} from "./shared/interfaces/IAuthService";
 import {MainContentModule} from "./main-content/main-content.module";
-import {ErrorHandlerModule} from "./error-handler/error-handler.module";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {FocusDirective} from "./shared/directives/focus.directive";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -18,15 +17,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import {FormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {SharedModule} from "./shared/shared.module";
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     AuthorizationModule,
-    ErrorHandlerModule,
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -37,9 +38,17 @@ import {MatIconModule} from "@angular/material/icon";
     MatSlideToggleModule,
     MatCardModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    SharedModule
   ],
-  providers: [],
+  providers: [
+    {
+    provide: IAuthServiceToken,
+    useClass: FbAuthService
+  }
+  ],
   exports: [],
   bootstrap: [AppComponent]
 })

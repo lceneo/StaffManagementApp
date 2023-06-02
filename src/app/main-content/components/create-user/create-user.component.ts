@@ -5,6 +5,8 @@ import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {Router} from "@angular/router";
 import {IUser} from "../../../shared/models/IUser";
 import {BehaviorSubject} from "rxjs";
+import {MatDialog} from "@angular/material/dialog";
+import {ModalWindowComponent} from "../modal-window/modal-window.component";
 
 @Component({
   selector: 'app-create-user',
@@ -17,12 +19,11 @@ export class CreateUserComponent implements OnInit{
     name: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     surname: new FormControl("", [Validators.required, CustomValidators.onlyLettersValidator]),
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
-    age: new FormControl("", [Validators.required, Validators.min(18), Validators.max(80), CustomValidators.onlyDigitsValidator]),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    birthdayDate: new FormControl(new Date(), Validators.required),
+    birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
     salaryHistory: new FormArray([this.getEmptySalaryForm()])
@@ -37,7 +38,8 @@ export class CreateUserComponent implements OnInit{
   constructor(
     @Inject(IUserDbServiceToken)
     private fbDb: IUserDbService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {}
 
   public ngOnInit(): void {
@@ -60,7 +62,12 @@ export class CreateUserComponent implements OnInit{
   public createUser(){
     this.isLoading$.next(true);
     const imgFile = this.imgInput.nativeElement.files[0];
-    const user = {...this.form.value, fired: false, salary: this.salaryHistoryForm.controls[0].value.salary};
+    const user = {
+      ...this.form.value,
+      fired: false,
+      salary: this.salaryHistoryForm.controls[0].value.salary,
+      age: this.calculateAgeFromBirthday(this.form.value.birthdayDate)
+    };
     if(imgFile){
       this.getUploadImgTask(user, imgFile)
         .then((img) => this.fbDb.addUser({...user, img: img}))
@@ -84,6 +91,21 @@ export class CreateUserComponent implements OnInit{
     this.router.navigate(["users"]);
   }
 
+  public openLeaveDialog(){
+    const dialogRef = this.dialog.open(ModalWindowComponent, {
+      data: {
+        title: "Пользователь не сохранён",
+        text: "Вы действительно хотите покинуть эту страницу? Все несохранённые изменения будут утеряны",
+        confirmButtonText: "Покинуть страницу",
+        cancelButtonText: "Отмена"
+      }
+    });
+    dialogRef.afterClosed().subscribe(v => {
+      if(v)
+        this.returnToUsersList();
+    });
+  }
+
   private getUploadImgTask(user: IUser, imgFile: File){
     return this.fbDb.uploadUserImg(user, imgFile)
       .then(v => v.ref.getDownloadURL());
@@ -105,5 +127,15 @@ export class CreateUserComponent implements OnInit{
       this.isLoading$.next(false);
       clearTimeout(timer)
     }, interval);
+  }
+
+  private calculateAgeFromBirthday(birthdayDate: Date){
+    const currentDate = new Date();
+    const yearsDistiction = currentDate.getFullYear() - birthdayDate.getFullYear();
+    const monthDistiction = currentDate.getMonth() - birthdayDate.getMonth();
+    if(monthDistiction < 0 || (monthDistiction === 0 && currentDate.getDate() < birthdayDate.getDate()))
+      return yearsDistiction - 1;
+    else
+      return yearsDistiction;
   }
 }

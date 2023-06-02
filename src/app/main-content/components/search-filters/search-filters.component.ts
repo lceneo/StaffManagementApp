@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {CompanyPosition, Gender, IUserFilters} from "../../../shared/models/IUser";
 import {FormControl, FormGroup} from "@angular/forms";
+import {ListStateSaveService} from "../../services/list-state-save.service";
 
 @Component({
   selector: 'app-search-filters',
@@ -23,11 +24,27 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
     fired: new FormControl(false)
   });
 
-  @Output() public filters$ = new BehaviorSubject<IUserFilters>(JSON.parse(JSON.stringify(this.filtersGroup.value)));
+  @Input() public savedFilters?: IUserFilters;
+  @Output() public filters$ = new EventEmitter<IUserFilters>();
+
   private destroy$ = new Subject<boolean>();
 
-  ngOnInit(): void {
+  constructor(
+    private listStateS: ListStateSaveService
+  ) {}
+
+  public ngOnInit(): void {
     this.initialFilters = JSON.parse(JSON.stringify(this.filtersGroup.value));
+    const listStateFilters = this.listStateS.getState()?.filters
+    if(listStateFilters){
+      this.filtersGroup.setValue(listStateFilters);
+      this.filters$.next(listStateFilters);
+      this.listStateS.resetState();
+    }
+    else if(this.savedFilters)
+      this.filtersGroup.setValue(this.savedFilters);
+    else
+      this.filters$.next(this.filtersGroup.value as IUserFilters)
     this.filtersGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),
@@ -38,6 +55,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   public resetFilters(){

@@ -1,0 +1,8 @@
+<div class="wrapper">
+  <h1 class="wrapper__title">{{data.title}}</h1>
+  <p class="wrapper__text">{{data.text}}</p>
+  <div class = "wrapper__buttons">
+    <button class="wrapper__btn cancelBtn" mat-flat-button color="primary" (click)="closeDialog(false)">{{data.cancelButtonText}}</button>
+    <button class="wrapper__btn" mat-flat-button color="warn" (click)="closeDialog(true)">{{data.confirmButtonText}}</button>
+  </div>
+</div>
