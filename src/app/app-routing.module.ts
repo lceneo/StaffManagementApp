@@ -10,7 +10,8 @@ const routes: Routes = [
   { path: "", redirectTo: "users", pathMatch: "full" },
   { path: "login", component: LoginComponent, canActivate: [authGuard] },
   { path: "registration", component: RegistrationComponent, canActivate: [authGuard] },
-  { path: "users", loadChildren: () => import("./main-content/main-content.module").then(m => m.MainContentModule), canActivate: [authGuard] },
+  { path: "users", loadChildren: () => import("./main-content/main-content.module")
+  .then(m => m.MainContentModule), canActivate: [authGuard] },
   { path: "users/:id", component: UserInfoComponent, canActivate: [authGuard] },
 ];
 
