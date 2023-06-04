@@ -1,8 +1,8 @@
-<header class="header">
+<header class="header" *ngLet="authS.isAuthorized$ | async as isAuthorized">
   <div class="header__container">
     <div class="header__content">
       <div class="header__toggle">
-        <nav class="navigation">
+        <nav class="navigation" *ngIf="isAuthorized">
           <a class="navigation__link" routerLink="projects" routerLinkActive="active">Проекты</a>
           <a class="navigation__link" routerLink="users" routerLinkActive="active">Сотрудники</a>
         </nav>
@@ -11,7 +11,7 @@
                   matTooltip="Сменить тему"
             ></mat-slide-toggle
           >
-          <button mat-icon-button (click) = "exitFromAccount()" *ngIf="authS.isAuthorized$ | async"
+          <button mat-icon-button (click) = "exitFromAccount()" *ngIf="isAuthorized"
                   matTooltip="Выйти"
           >
             <mat-icon>exit_to_app</mat-icon>
