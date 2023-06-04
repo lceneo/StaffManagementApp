@@ -1,0 +1,74 @@
+.project-info{
+  width: 50%;
+  margin: 100px auto;
+
+  &__title{
+    text-align: center;
+    font-size: 64px;
+    font-weight: 600;
+    margin-bottom: 50px;
+  }
+
+  &__description{
+    font-size: 22px;
+    margin-bottom: 30px;
+  }
+
+  &__caption{
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  &__staff{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #b1b1b1;
+    border-collapse: collapse;
+
+    tr{
+      display: flex;
+      width: 100%;
+    }
+
+    th, td{
+      border: 1px solid #b1b1b1;
+      padding: 10px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    th{
+      width: 200px;
+    }
+
+    td{
+      flex: 1 0;
+      cursor: pointer;
+      transition: 0.2s ease;
+
+      &:hover{
+        background-color: rgba(0,0,0,0.2);
+      }
+    }
+  }
+
+  &__exit{
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    font-size: 40px;
+    cursor: pointer;
+  }
+
+  &__subtitle{
+    font-weight: 600;
+    font-size: 24px;
+  }
+}

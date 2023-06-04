@@ -1,0 +1,36 @@
+<div class="projects">
+  <div class="wrapper">
+    <div class="projects__main">
+      <mat-form-field class="projects__name-filter">
+        <input type="text" matInput placeholder="Введите название проекта..." [(ngModel)]="filters.name">
+      </mat-form-field>
+      <button mat-raised-button class="projects__add" (click)="changePopUpVisibility(true, 'create')">Добавить +</button>
+      <ul class="projects__list">
+        <app-project-item class="projects__item"
+                          *ngFor="let project of projects$ | async | filter: filters"
+                          [project]="project"
+                          (editProjectEvent)="onEditProject($event)"
+        ></app-project-item>
+      </ul>
+    </div>
+    <div class="projects__filter">
+      <mat-card-subtitle>Фильтровать по сотрудникам</mat-card-subtitle>
+      <mat-form-field>
+        <mat-select multiple [(ngModel)]="filters.staff">
+          <mat-option *ngFor="let user of users$ | async" [value]="user">{{user.surname}} {{user.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button class="projects__filter-clear" (click)="filters.staff = []">Очистить</button>
+    </div>
+  </div>
+  <app-add-project-pop-up [isVisible]="isVisiblePopUp"
+                          (closePopUpEvent)="changePopUpVisibility(false, 'create')"
+                          (createProjectEvent)="addProject($event)"
+  ></app-add-project-pop-up>
+  <app-edit-project
+    [isVisible]="isVisibleEditPopUp"
+    [projectToUpdate]="projectToEdit$"
+    (closePopUpEvent)="changePopUpVisibility(false, 'edit')"
+    (updateProjectEvent)="updateProject(projectToEdit$?.value?.id, $event)"
+  />
+</div>

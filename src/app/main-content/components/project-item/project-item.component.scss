@@ -1,0 +1,29 @@
+.project{
+  margin-bottom: 40px;
+  width: 100%;
+  cursor: pointer;
+
+  &__header{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__change{
+    margin-left: auto;
+  }
+
+  &__staff{
+    list-style: none;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    padding-left: 15px;
+  }
+
+  &__back,&__forward{
+    height: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}
