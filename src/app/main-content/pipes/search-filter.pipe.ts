@@ -1,11 +1,12 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform} from '@angular/core';
 import {CompanyPosition, Gender, IUser, IUserFilters} from "../../shared/models/IUser";
+import {IProject} from "../../shared/models/IProject";
 
 @Pipe({
   name: 'searchFilter'
 })
 export class SearchFilterPipe implements PipeTransform {
-  transform(users: IUser[] | null, filters: IUserFilters): IUser[] {
+  transform(users: IUser[] | null, filters: IUserFilters, projects: IProject[]): IUser[] {
     if(!users)
       return [];
     else if(!filters)
@@ -15,7 +16,8 @@ export class SearchFilterPipe implements PipeTransform {
       && u.salary >= filters.salaryFrom && u.salary <= filters.salaryTo
       && (u.companyPosition === filters.companyPosition || filters.companyPosition === CompanyPosition.Undefined)
       && (u.gender === filters.gender || filters.gender === Gender.Undefined)
-      && (u.projectName === filters.projectName || !filters.projectName)
+      && (filters.projectName === "Любой" || projects.find(p => p.id === filters.projectName)?.staff
+        .some(s => s.id === u.id) || !filters.projectName)
       && (u.fired === filters.fired)
     );
   }

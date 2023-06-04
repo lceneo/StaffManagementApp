@@ -1,6 +1,6 @@
 import {
   ChangeDetectionStrategy,
-  Component, ElementRef,
+  Component, ElementRef, inject,
   Inject, OnDestroy,
   OnInit,
   ViewChild
@@ -25,6 +25,8 @@ import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {MatDialog} from "@angular/material/dialog";
 import {ModalWindowComponent} from "../modal-window/modal-window.component";
 import {ListStateSaveService} from "../../services/list-state-save.service";
+import {IProject} from "../../../shared/models/IProject";
+import {FbDbService, ProjectsToken} from "../../../shared/services/fb-db.service";
 
 @Component({
   selector: 'app-user-info',
@@ -39,7 +41,6 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
-    projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
     birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
@@ -48,6 +49,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
   });
 
   public user$?: Observable<IUser>;
+  public projects$: Observable<IProject[]> = inject(ProjectsToken);
   private user?: IUser;
   private destroy$ = new Subject<boolean>();
   public profileInfoHasChanged$ = new BehaviorSubject<boolean>(false);
@@ -189,7 +191,7 @@ export class UserInfoComponent implements OnInit, OnDestroy{
     }
     this.form.disable();
     this.imgInput.nativeElement.value = null;
-    this.imgContainer.nativeElement.src = user.img || 'assets/img/temporary-user.PNG';
+    this.imgContainer.nativeElement.src = user.img || 'assets/img/temporary-user.png';
   }
 
   public returnToUsersList(){

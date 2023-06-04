@@ -21,7 +21,6 @@ export class CreateUserComponent implements OnInit{
     patronic: new FormControl("",  CustomValidators.optionalOnlyLettersValidator),
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
-    projectName: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
     birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),

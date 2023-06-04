@@ -1,8 +1,19 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
+import {BehaviorSubject, debounceTime, Observable, Subject, takeUntil} from "rxjs";
 import {CompanyPosition, Gender, IUserFilters} from "../../../shared/models/IUser";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ListStateSaveService} from "../../services/list-state-save.service";
+import {IProject} from "../../../shared/models/IProject";
+import {ProjectsToken} from "../../../shared/services/fb-db.service";
 
 @Component({
   selector: 'app-search-filters',
@@ -20,12 +31,13 @@ export class SearchFiltersComponent implements OnInit, OnDestroy{
     salaryTo: new FormControl(1000000),
     companyPosition: new FormControl(CompanyPosition.Undefined),
     gender: new FormControl(Gender.Undefined),
-    projectName: new FormControl(""),
+    projectName: new FormControl("Любой"),
     fired: new FormControl(false)
   });
 
   @Input() public savedFilters?: IUserFilters;
   @Output() public filters$ = new EventEmitter<IUserFilters>();
+  public projects$: Observable<IProject[]> = inject(ProjectsToken);
 
   private destroy$ = new Subject<boolean>();
 

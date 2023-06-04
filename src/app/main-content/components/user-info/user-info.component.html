@@ -7,7 +7,7 @@
     <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
     <ng-template #usersTemplate>
       <div class="imgWrapper">
-        <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
+        <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.png'" height="300px" width="300px">
         <button class="btn" mat-flat-button color="primary" (click) = "imgInput.click()" [hidden]="!onEdit">
           Загрузить изображение
         </button>

@@ -4,7 +4,6 @@
   }
   &__content{
     display: flex;
-
     justify-content: flex-end;
   }
   &__toggle{
@@ -14,4 +13,20 @@
     align-items: center;
     margin: 20px 0 0 0;
   }
+  .navigation{
+    color: cornflowerblue;
+    font-size: 12px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    &__link{
+      margin-left: 20px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+  }
+}
+
+.active{
+  color: forestgreen;
 }

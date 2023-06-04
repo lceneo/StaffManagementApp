@@ -34,6 +34,7 @@ import {ProjectInfoComponent} from "./components/project-info/project-info.compo
 import {ProjectItemComponent} from "./components/project-item/project-item.component";
 import {EditProjectComponent} from "./components/edit-project/edit-project.component";
 import {FilterPipe} from "./components/projects-list/filter-pipe";
+import {UserProjectsPipe} from "./pipes/user-projects.pipe";
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import {FilterPipe} from "./components/projects-list/filter-pipe";
     ProjectInfoComponent,
     ProjectItemComponent,
     EditProjectComponent,
-    FilterPipe
+    FilterPipe,
+    UserProjectsPipe
   ],
   imports: [
     CommonModule,

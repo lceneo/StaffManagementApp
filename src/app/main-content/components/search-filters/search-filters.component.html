@@ -11,6 +11,8 @@
   <mat-form-field appearance="outline">
     <mat-label>Проект</mat-label>
     <mat-select formControlName="projectName">
+      <mat-option [value]="'Любой'">Любой</mat-option>
+      <mat-option *ngFor = "let project of projects$ | async" [value]="project.id">{{project.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">

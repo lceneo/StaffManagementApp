@@ -2,7 +2,7 @@ import {inject, Injectable, InjectionToken} from '@angular/core';
 import {AngularFirestore, CollectionReference, Query} from "@angular/fire/compat/firestore";
 import {IUser, IUserFb, Promotion} from "../models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../interfaces/IUserDbService";
-import {map, Observable} from "rxjs";
+import {map, Observable, startWith} from "rxjs";
 import firebase from "firebase/compat/app";
 // import "firebase/storage"
 import 'firebase/compat/storage'
@@ -40,7 +40,10 @@ export const fbDataTransformationFn = () => {
 export const fbProjectsDataTransformationFn = () => {
   const fbDbService = inject(FbDbService);
   return fbDbService.getAllProjects$()
-    .pipe(map(res => res.map(e => e.payload.doc.data())));
+    .pipe(
+      map(res => res.map(e => e.payload.doc.data())),
+      startWith([])
+      );
 }
 
 @Injectable()

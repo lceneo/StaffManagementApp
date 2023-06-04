@@ -16,7 +16,7 @@ import {IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 export class ProjectsListComponent{
   public projects: IProject[] = []
   public users$: Observable<IUser[]> = inject(UsersToken);
-  public projects$: Observable<IProject[]> = inject(ProjectsToken)
+  public projects$: Observable<IProject[]> = inject(ProjectsToken);
   public nameFilter: FormControl = new FormControl('');
   public staffFilter: FormControl = new FormControl([]);
   public filters: IProjectFilters = {

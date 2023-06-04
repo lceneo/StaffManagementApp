@@ -2,6 +2,10 @@
   <div class="header__container">
     <div class="header__content">
       <div class="header__toggle">
+        <nav class="navigation">
+          <a class="navigation__link" routerLink="projects" routerLinkActive="active">Проекты</a>
+          <a class="navigation__link" routerLink="users" routerLinkActive="active">Сотрудники</a>
+        </nav>
         <mat-icon>{{ mode }}</mat-icon>
           <mat-slide-toggle [(ngModel)]="isChecked" (change)="changed($event)"
                   matTooltip="Сменить тему"
