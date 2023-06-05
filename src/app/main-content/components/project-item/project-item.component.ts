@@ -2,6 +2,7 @@ import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/c
 import {Event, Router} from "@angular/router";
 import {FbDbService} from "../../../shared/services/fb-db.service";
 import {IProject} from "../../../shared/models/IProject";
+import {IUser} from "../../../shared/models/IUser";
 
 @Component({
   selector: 'app-project-item[project]',
@@ -10,6 +11,7 @@ import {IProject} from "../../../shared/models/IProject";
 })
 export class ProjectItemComponent{
   @Input() project!: IProject;
+  @Input() users!: IUser[];
   @Output() editProjectEvent = new EventEmitter()
   private router = inject(Router);
   private fbDbService = inject(FbDbService)

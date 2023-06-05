@@ -1,12 +1,14 @@
 <div class="project-info" *ngLet="projectInfo$ | async as project">
-  <mat-icon class="project-info__exit" (click)="redirectToProjects()">keyboard_arrow_left</mat-icon>
-  <h1 class="project-info__title">{{project?.name}}</h1>
-  <p class="project-info__description"><b class="project-info__subtitle">Описание:</b> {{project?.description}}</p>
-  <table class="project-info__staff">
-    <caption class="project-info__caption">Сотрудники:</caption>
-    <tr *ngFor="let companyPos of getCompanyPositions()">
-      <th>{{companyPos}}</th>
-      <td *ngFor="let employee of staff[companyPos]" (click)="redirectToEmployeeInfo(employee.id)">{{employee.surname}} {{employee.name}}</td>
-    </tr>
-  </table>
+  <ng-container *ngLet="staff$ | async as staff">
+    <mat-icon class="project-info__exit" (click)="redirectToProjects()">keyboard_arrow_left</mat-icon>
+    <h1 class="project-info__title">{{project?.name}}</h1>
+    <p class="project-info__description"><b class="project-info__subtitle">Описание:</b> {{project?.description}}</p>
+    <table class="project-info__staff" *ngLet="project | currentStaff: staff as projectStaff">
+      <caption class="project-info__caption">Сотрудники:</caption>
+      <tr *ngFor="let companyPos of getCompanyPositions(project, projectStaff)">
+        <th>{{companyPos}}</th>
+        <td *ngFor="let employee of getStaffWithPosition(companyPos, projectStaff)" (click)="redirectToEmployeeInfo(employee.id)">{{employee.surname}} {{employee.name}}</td>
+      </tr>
+    </table>
+  </ng-container>
 </div>

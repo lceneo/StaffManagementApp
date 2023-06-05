@@ -16,7 +16,7 @@
     <mat-card-subtitle>Сотрудники:</mat-card-subtitle>
     <ul class="project__staff">
       <li><button class="project__back" (click)="pageDecrement($event)" [disabled]="page === 0"><mat-icon>keyboard_arrow_left</mat-icon></button></li>
-      <li *ngFor="let employee of project.staff.slice(page * 5, page * 5 + 5)">
+      <li *ngFor="let employee of (project | currentStaff: users).slice(page * 5, page * 5 + 5)">
         <button mat-raised-button (click)="redirectToEmployeeInfo(employee.id)">{{employee.surname}} {{employee.name}}</button>
       </li>
       <li><button class="project__forward" (click)="pageIncrement($event)" [disabled]="page >= project.staff.length / 5 - 1"><mat-icon>keyboard_arrow_right</mat-icon></button></li>

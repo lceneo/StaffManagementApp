@@ -6,6 +6,7 @@ import {IUser} from "../../../shared/models/IUser";
 import {FbDbService, ProjectsToken, UsersToken} from "../../../shared/services/fb-db.service";
 import {IProject, IProjectFilters} from "../../../shared/models/IProject";
 import {IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
+import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 
 @Component({
   selector: 'app-projects-list',
@@ -15,7 +16,7 @@ import {IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 })
 export class ProjectsListComponent{
   public projects: IProject[] = []
-  public users$: Observable<IUser[]> = inject(UsersToken);
+  public users$: Observable<IUser[]> = inject(FbEntitiesService).users$.asObservable();
   public projects$: Observable<IProject[]> = inject(ProjectsToken);
   public nameFilter: FormControl = new FormControl('');
   public staffFilter: FormControl = new FormControl([]);

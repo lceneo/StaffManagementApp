@@ -1,4 +1,4 @@
-<div class="projects">
+<div class="projects" *ngLet="users$ | async as users">
   <div class="wrapper">
     <div class="projects__main">
       <mat-form-field class="projects__name-filter">
@@ -9,6 +9,7 @@
         <app-project-item class="projects__item"
                           *ngFor="let project of projects$ | async | filter: filters"
                           [project]="project"
+                          [users] = users
                           (editProjectEvent)="onEditProject($event)"
         ></app-project-item>
       </ul>

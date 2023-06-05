@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {IUser} from "../../../shared/models/IUser";
-import {IProject, IProjectFilters} from "../../../shared/models/IProject";
+import {IUser} from "../../shared/models/IUser";
+import {IProject, IProjectFilters} from "../../shared/models/IProject";
 
 @Pipe({
   name: 'filter',
