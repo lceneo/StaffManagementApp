@@ -22,7 +22,7 @@ export class CreateUserComponent implements OnInit{
     gender: new FormControl("", Validators.required),
     education: new FormControl("", Validators.required),
     companyPosition: new FormControl("", Validators.required),
-    birthdayDate: new FormControl(new Date(), [Validators.required, CustomValidators.ageValidator]),
+    birthdayDate: new FormControl(this.setDefaultAge(), [Validators.required, CustomValidators.ageValidator]),
     interviewDate: new FormControl(new Date(), Validators.required),
     firstWorkDayDate: new FormControl(new Date(), Validators.required),
     salaryHistory: new FormArray([this.getEmptySalaryForm()])
@@ -136,5 +136,10 @@ export class CreateUserComponent implements OnInit{
       return yearsDistiction - 1;
     else
       return yearsDistiction;
+  }
+
+  private setDefaultAge(){
+    const currentDate = new Date();
+    return new Date(currentDate.getFullYear() - 19, currentDate.getMonth(), currentDate.getMinutes());
   }
 }
