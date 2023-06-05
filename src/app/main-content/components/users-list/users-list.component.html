@@ -1,49 +1,101 @@
-
 <ng-container class="container" *ngLet="users$ | async as users">
+  <mat-spinner
+    class="spinner"
+    *ngIf="isLoading$ | async; else usersTemplate"
+  ></mat-spinner>
 
-  <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
-
-<ng-template #usersTemplate>
-  <section class="users">
-    <div class="wrapper">
-      <div class="users__info" *ngLet="filters$ | async as searchFilters">
-        <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()"
-          matTooltip="Добавить сотрудника">
-          <mat-icon>add</mat-icon>
-        </button>
-        <ul class="users__list" *ngLet="users | searchFilter: searchFilters  as filteredUsers">
-            <li class="users__item" *ngFor="let user of filteredUsers | searchFilter: searchFilters
-             | paginate: {itemsPerPage: itemsPerPage, currentPage: currentPage}">
-              <mat-card class="users__card" [ngClass]="{
-                 'users__card-successfulWorker': user.lastPromotion === 'Успешный',
-                 'users__card-unsuccessfulWorker': user.lastPromotion === 'Неуспешный'
-              }">
+  <ng-template #usersTemplate>
+    <section class="users">
+      <div class="wrapper">
+        <div class="users__info" *ngLet="filters$ | async as searchFilters">
+          <button
+            class="users__addBtn"
+            mat-icon-button
+            (click)="openCreateUserDialog()"
+            matTooltip="{{ 'data.addEmployee' | translate }}"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+          <ul
+            class="users__list"
+            *ngLet="users | searchFilter : searchFilters as filteredUsers"
+          >
+            <li
+              class="users__item"
+              *ngFor="
+                let user of filteredUsers
+                  | searchFilter : searchFilters
+                  | paginate
+                    : { itemsPerPage: itemsPerPage, currentPage: currentPage }
+              "
+            >
+              <mat-card
+                class="users__card"
+                [ngClass]="{
+                  'users__card-successfulWorker':
+                    user.lastPromotion === 'Успешный',
+                  'users__card-unsuccessfulWorker':
+                    user.lastPromotion === 'Неуспешный'
+                }"
+              >
                 <mat-card-header>
                   <mat-card-title-group>
-                    <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>
-                    <mat-card-subtitle>{{user.companyPosition}}</mat-card-subtitle>
+                    <mat-card-title
+                      >{{ user.surname }} {{ user.name }}
+                      {{ user.patronic }}</mat-card-title
+                    >
+                    <mat-card-subtitle>{{
+                      user.companyPosition
+                    }}</mat-card-subtitle>
                   </mat-card-title-group>
                 </mat-card-header>
                 <mat-card-content class="matCardContent">
                   <div>
-                    <p><span>Проект:</span> {{user.projectName}}</p>
-                    <p><span>Возраст:</span> {{user.age}}</p>
-                    <p><span>Пол:</span> {{user.gender}}</p>
-                    <p><span>Заработная плата:</span> {{user.salary | currency: "RUB" }}</p>
+                    <p>
+                      <span>{{ "data.project" | translate }}:</span>
+                      {{ user.projectName }}
+                    </p>
+                    <p>
+                      <span>{{ "data.age" | translate }}:</span> {{ user.age }}
+                    </p>
+                    <p>
+                      <span>{{ "data.sex" | translate }}:</span>
+                      {{ user.gender }}
+                    </p>
+                    <p>
+                      <span>{{ "data.wage" | translate }}:</span>
+                      {{ user.salary | currency : "RUB" }}
+                    </p>
                   </div>
-                  <img class="users__img" mat-card-xl-image [src]="user.img ?? 'assets/img/temporary-user.PNG'" alt="Employee photo">
+                  <img
+                    class="users__img"
+                    mat-card-xl-image
+                    [src]="user.img ?? 'assets/img/temporary-user.PNG'"
+                    alt="Employee photo"
+                  />
                 </mat-card-content>
-                <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">Перейти в профиль</a>
+                <a
+                  class="users__link"
+                  (click)="openUserDetailedInfo(user.id!)"
+                  >{{ "data.goToProfile" | translate }}</a
+                >
               </mat-card>
             </li>
-        </ul>
+          </ul>
+        </div>
+        <app-search-filters
+          class="users__filters"
+          [savedFilters]="savedFilters"
+          (filters$)="updateFilter($event)"
+        ></app-search-filters>
       </div>
-      <app-search-filters class="users__filters" [savedFilters]="savedFilters" (filters$)="updateFilter($event)"></app-search-filters>
-    </div>
-    <pagination-controls class="users__paginator" (pageChange)="changePage($event)" previousLabel = "" nextLabel= "">
-    </pagination-controls>
-  </section>
-</ng-template>
-
+      <pagination-controls
+        class="users__paginator"
+        (pageChange)="changePage($event)"
+        previousLabel=""
+        nextLabel=""
+      >
+      </pagination-controls>
+    </section>
+  </ng-template>
 </ng-container>
-

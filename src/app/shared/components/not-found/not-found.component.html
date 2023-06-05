@@ -1,14 +1,24 @@
-
 <div class="wrapper">
-  <mat-spinner class="spinner" *ngIf = "isLoading$ | async; else loadedContent"></mat-spinner>
+  <mat-spinner
+    class="spinner"
+    *ngIf="isLoading$ | async; else loadedContent"
+  ></mat-spinner>
 
   <ng-template #loadedContent>
     <h1 class="wrapper__title">Ошибка 404</h1>
 
-    <p class="wrapper__text">Кажется, что-то пошло не так! Страница, которую вы запрашиваете, не существует. Возможно,
-          она устарела, была удалена, или был введён неверный адрес в адресной строке</p>
+    <p class="wrapper__text">
+      Кажется, что-то пошло не так! Страница, которую вы запрашиваете, не
+      существует. Возможно, она устарела, была удалена, или был введён неверный
+      адрес в адресной строке
+    </p>
 
-    <button class="wrapper__btn" color="primary" mat-flat-button (click)="navigateToMainPage()">
+    <button
+      class="wrapper__btn"
+      color="primary"
+      mat-flat-button
+      (click)="navigateToMainPage()"
+    >
       Перейти на главную
     </button>
   </ng-template>

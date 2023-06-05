@@ -1,68 +1,171 @@
 <div class="wrapper" *ngLet="user$ | async as user">
   <div class="userInfo" *ngLet="onEdit$ | async as onEdit">
-    <button class="returnBtn" mat-icon-button (click) = "returnToUsersList()" [hidden]="onEdit"
-            matTooltip="К списку">
+    <button
+      class="returnBtn"
+      mat-icon-button
+      (click)="returnToUsersList()"
+      [hidden]="onEdit"
+      matTooltip="К списку"
+    >
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
+    <mat-spinner
+      class="spinner"
+      *ngIf="isLoading$ | async; else usersTemplate"
+    ></mat-spinner>
     <ng-template #usersTemplate>
       <div class="imgWrapper">
-        <img #imgContainer [src]="user?.img ?? 'assets/img/temporary-user.PNG'" height="300px" width="300px">
-        <button class="btn" mat-flat-button color="primary" (click) = "imgInput.click()" [hidden]="!onEdit">
-          Загрузить изображение
+        <img
+          #imgContainer
+          [src]="user?.img ?? 'assets/img/temporary-user.PNG'"
+          height="300px"
+          width="300px"
+        />
+        <button
+          class="btn"
+          mat-flat-button
+          color="primary"
+          (click)="imgInput.click()"
+          [hidden]="!onEdit"
+        >
+          {{ "data.uploadImg" | translate }}
         </button>
-        <input (change)="uploadImg()" #imgInput id="imgInput" type="file" accept="image/png, image/jpeg" [hidden]="!onEdit">
-        <button class="btnChangeHireStatus" mat-raised-button [color]="user.fired ? 'primary' : 'warn'" (click)="fireOrHireUser(user)" [hidden]="onEdit">
-          {{user.fired ? "Нанять сотрудника" : "Уволить сотрудника"}}
+        <input
+          (change)="uploadImg()"
+          #imgInput
+          id="imgInput"
+          type="file"
+          accept="image/png, image/jpeg"
+          [hidden]="!onEdit"
+        />
+        <button
+          class="btnChangeHireStatus"
+          mat-raised-button
+          [color]="user.fired ? 'primary' : 'warn'"
+          (click)="fireOrHireUser(user)"
+          [hidden]="onEdit"
+        >
+          {{ user.fired ? ("{{'data.uploadImg' | translate}}") : "sss" }}
         </button>
       </div>
       <div>
-        <button [hidden]="!onEdit" class="restoreBtn" mat-icon-button (click) = "openLeaveDialog(user)"
-                matTooltip="Выйти из режима редактирования">
+        <button
+          [hidden]="!onEdit"
+          class="restoreBtn"
+          mat-icon-button
+          (click)="openLeaveDialog(user)"
+          matTooltip="Выйти из режима редактирования"
+        >
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <button [hidden]="onEdit" class="editBtn" mat-icon-button (click) = "makeUserFieldsEditable()"
-                matTooltip="Редактировать">
+        <button
+          [hidden]="onEdit"
+          class="editBtn"
+          mat-icon-button
+          (click)="makeUserFieldsEditable()"
+          matTooltip="Редактировать"
+        >
           <mat-icon>edit</mat-icon>
         </button>
-        <form class="form" [formGroup]="form" *ngLet="profileInfoHasChanged$ | async as profileInfoHasChanged">
+        <form
+          class="form"
+          [formGroup]="form"
+          *ngLet="profileInfoHasChanged$ | async as profileInfoHasChanged"
+        >
           <ng-container *ngFor="let prop of userPropertyKeys">
             <ng-container *ngIf="prop.templateName === 'defaultTemplate'">
-              <ng-container *ngTemplateOutlet="defaultTemplate; context: {$implicit: prop.propName}"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="
+                  defaultTemplate;
+                  context: { $implicit: prop.propName }
+                "
+              ></ng-container>
             </ng-container>
             <ng-container *ngIf="prop.templateName === 'dateTemplate'">
-              <ng-container *ngTemplateOutlet="dateTemplate; context: {$implicit: prop.propName}"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="
+                  dateTemplate;
+                  context: { $implicit: prop.propName }
+                "
+              ></ng-container>
             </ng-container>
             <ng-container *ngIf="prop.templateName === 'genderTemplate'">
-              <ng-container *ngTemplateOutlet="genderTemplate; context: {$implicit: prop.propName}"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="
+                  genderTemplate;
+                  context: { $implicit: prop.propName }
+                "
+              ></ng-container>
             </ng-container>
-            <ng-container *ngIf="prop.templateName === 'companyPositionTemplate'">
-              <ng-container *ngTemplateOutlet="companyPositionTemplate; context: {$implicit: prop.propName}"></ng-container>
+            <ng-container
+              *ngIf="prop.templateName === 'companyPositionTemplate'"
+            >
+              <ng-container
+                *ngTemplateOutlet="
+                  companyPositionTemplate;
+                  context: { $implicit: prop.propName }
+                "
+              ></ng-container>
             </ng-container>
           </ng-container>
           <div class="salaryInfo">
             <div class="salaryInfo__description">
-              <p><span>История зарплаты:</span></p>
-              <button mat-icon-button (click)="addSalaryHistoryItem()" [hidden]="!onEdit">
+              <p><span>{{"data.historyWage" | translate}}:</span></p>
+              <button
+                mat-icon-button
+                (click)="addSalaryHistoryItem()"
+                [hidden]="!onEdit"
+              >
                 <mat-icon>add</mat-icon>
               </button>
             </div>
             <div class="salaryInfo__items">
-              <div *ngFor="let control of salaryItemsArray?.controls; let i = index">
-                <ng-container *ngTemplateOutlet="salaryItemTemplate; context: {$implicit: control, index: i}"></ng-container>
+              <div
+                *ngFor="
+                  let control of salaryItemsArray?.controls;
+                  let i = index
+                "
+              >
+                <ng-container
+                  *ngTemplateOutlet="
+                    salaryItemTemplate;
+                    context: { $implicit: control, index: i }
+                  "
+                ></ng-container>
               </div>
             </div>
           </div>
-          <button class="form__saveBtn" mat-raised-button color="primary" (click)="updateUserInfo(user, form.value)" [disabled] = "form.invalid || !profileInfoHasChanged" [hidden]="!onEdit">Сохранить информацию</button>
+          <button
+            class="form__saveBtn"
+            mat-raised-button
+            color="primary"
+            (click)="updateUserInfo(user, form.value)"
+            [disabled]="form.invalid || !profileInfoHasChanged"
+            [hidden]="!onEdit"
+          >
+            {{ "data.saveData" | translate }}
+          </button>
 
           <ng-template #defaultTemplate let-controlName>
             <div>
               <mat-form-field appearance="outline">
-                <mat-label>{{controlName}}</mat-label>
-                <input class = "form__input" matInput type="text" [formControlName]="controlName">
+                <mat-label>{{ controlName }}</mat-label>
+                <input
+                  class="form__input"
+                  matInput
+                  type="text"
+                  [formControlName]="controlName"
+                />
               </mat-form-field>
-              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
-                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              <ng-container
+                *ngIf="
+                  form.controls[controlName].invalid &&
+                  form.controls[controlName].touched
+                "
+              >
+                <app-error-handler
+                  [errors]="form.controls[controlName].errors"
+                ></app-error-handler>
               </ng-container>
             </div>
           </ng-template>
@@ -70,80 +173,158 @@
           <ng-template #dateTemplate let-controlName>
             <div>
               <mat-form-field appearance="outline">
-                <mat-label>{{controlName}}</mat-label>
-                <input readonly matInput [matDatepicker]="picker" [formControlName]="controlName">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-label>{{ controlName }}</mat-label>
+                <input
+                  readonly
+                  matInput
+                  [matDatepicker]="picker"
+                  [formControlName]="controlName"
+                />
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
-              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
-                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              <ng-container
+                *ngIf="
+                  form.controls[controlName].invalid &&
+                  form.controls[controlName].touched
+                "
+              >
+                <app-error-handler
+                  [errors]="form.controls[controlName].errors"
+                ></app-error-handler>
               </ng-container>
             </div>
           </ng-template>
 
           <ng-template #genderTemplate let-controlName>
             <mat-form-field appearance="outline">
-              <mat-label>{{controlName}}</mat-label>
+              <mat-label>{{ controlName }}</mat-label>
               <mat-select [formControlName]="controlName">
                 <mat-option [value]="'Мужской'">Мужской</mat-option>
                 <mat-option [value]="'Женский'">Женский</mat-option>
               </mat-select>
             </mat-form-field>
-            <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
-              <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+            <ng-container
+              *ngIf="
+                form.controls[controlName].invalid &&
+                form.controls[controlName].touched
+              "
+            >
+              <app-error-handler
+                [errors]="form.controls[controlName].errors"
+              ></app-error-handler>
             </ng-container>
           </ng-template>
 
           <ng-template #companyPositionTemplate let-controlName>
             <div>
               <mat-form-field appearance="outline">
-                <mat-label>{{controlName}}</mat-label>
+                <mat-label>{{ controlName }}</mat-label>
                 <mat-select [formControlName]="controlName">
-                  <mat-option [value]="'Разработчик'">Разработчик</mat-option>
-                  <mat-option [value]="'Тестировщик'">Тестировщик</mat-option>
-                  <mat-option [value]="'DevOps инженер'">DevOps инженер</mat-option>
-                  <mat-option [value]="'Менеджер по подбору персонала'">Менеджер по подбору персонала</mat-option>
-                  <mat-option [value]="'Системный администратор'">Системный администратор</mat-option>
-                  <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
+                  <mat-option [value]="'Разработчик'">{{ "data.developer" | translate }}</mat-option>
+                  <mat-option [value]="'Тестировщик'">{{ "data.tester" | translate }}</mat-option>
+                  <mat-option [value]="'DevOps инженер'"
+                    >DevOps {{ "data.engineer" | translate }}</mat-option
+                  >
+                  <mat-option [value]="'Менеджер по подбору персонала'"
+                    >HR {{ "data.manager" | translate }}</mat-option
+                  >
+                  <mat-option [value]="'Системный администратор'"
+                    >{{ "data.sysAdmin" | translate }}</mat-option
+                  >
+                  <mat-option [value]="'Дизайнер'">{{ "data.designer" | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container *ngIf="form.controls[controlName].invalid && form.controls[controlName].touched">
-                <app-error-handler [errors]="form.controls[controlName].errors"></app-error-handler>
+              <ng-container
+                *ngIf="
+                  form.controls[controlName].invalid &&
+                  form.controls[controlName].touched
+                "
+              >
+                <app-error-handler
+                  [errors]="form.controls[controlName].errors"
+                ></app-error-handler>
               </ng-container>
             </div>
           </ng-template>
 
-          <ng-template #salaryItemTemplate let-control let-index = "index">
+          <ng-template #salaryItemTemplate let-control let-index="index">
             <div class="salaryItem">
               <div *ngLet="control.get('date') as dateControl">
                 <mat-form-field class="salaryItem__date" appearance="outline">
-                  <mat-label>Укажите дату</mat-label>
-                  <input readonly matInput [matDatepicker]="picker" [formControl]="dateControl">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-label></mat-label>
+                  <input
+                    readonly
+                    matInput
+                    [matDatepicker]="picker"
+                    [formControl]="dateControl"
+                  />
+                  <mat-datepicker-toggle
+                    matIconSuffix
+                    [for]="picker"
+                  ></mat-datepicker-toggle>
                   <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
-                <ng-container *ngIf="dateControl.invalid && dateControl.touched">
-                  <app-error-handler [errors]="dateControl.errors"></app-error-handler>
+                <ng-container
+                  *ngIf="dateControl.invalid && dateControl.touched"
+                >
+                  <app-error-handler
+                    [errors]="dateControl.errors"
+                  ></app-error-handler>
                 </ng-container>
               </div>
               <div *ngLet="control.get('salary') as salaryControl">
                 <mat-form-field class="form__inputWrapper" appearance="outline">
-                  <mat-label>Укажите зарплату</mat-label>
-                  <input class = "form__input" matInput type="text" [formControl]="salaryControl">
+                  <mat-label>{{ "data.enterDate" | translate }}</mat-label>
+                  <input
+                    class="form__input"
+                    matInput
+                    type="text"
+                    [formControl]="salaryControl"
+                  />
                 </mat-form-field>
-                <ng-container *ngIf="salaryControl.invalid && salaryControl.touched">
-                  <app-error-handler [errors]="salaryControl.errors"></app-error-handler>
+                <ng-container
+                  *ngIf="salaryControl.invalid && salaryControl.touched"
+                >
+                  <app-error-handler
+                    [errors]="salaryControl.errors"
+                  ></app-error-handler>
                 </ng-container>
               </div>
-                <img [hidden]="index === salaryRaising.length || onEdit || salaryRaising[index] === 0" class="salaryItem__raiseStatus"
-                     [src]="salaryRaising[index] > 0 ? 'assets/img/arrow-up-icon.svg' : 'assets/img/arrow-down-icon.svg'"
-                     height="30px" width="30px">
-                <span class="salaryItem__raisePercent" [ngClass]="{
-                    'salaryItem__raisePercent-up': salaryRaising[index] > 0,
-                    'salaryItem__raisePercent-down': salaryRaising[index] < 0,
-                    'salaryItem__zeroPercent' : salaryRaising[index] === 0
-                }" [hidden]="index === salaryRaising.length || onEdit">{{salaryRaising[index] + "%"}}</span>
-              <button [hidden]="!onEdit" mat-icon-button (click)="removeSalaryHistoryItem(index)" [disabled] = "salaryItemsArray.controls.length === 1">
+              <img
+                [hidden]="
+                  index === salaryRaising.length ||
+                  onEdit ||
+                  salaryRaising[index] === 0
+                "
+                class="salaryItem__raiseStatus"
+                [src]="
+                  salaryRaising[index] > 0
+                    ? 'assets/img/arrow-up-icon.svg'
+                    : 'assets/img/arrow-down-icon.svg'
+                "
+                height="30px"
+                width="30px"
+              />
+              <span
+                class="salaryItem__raisePercent"
+                [ngClass]="{
+                  'salaryItem__raisePercent-up': salaryRaising[index] > 0,
+                  'salaryItem__raisePercent-down': salaryRaising[index] < 0,
+                  salaryItem__zeroPercent: salaryRaising[index] === 0
+                }"
+                [hidden]="index === salaryRaising.length || onEdit"
+                >{{ salaryRaising[index] + "%" }}</span
+              >
+              <button
+                [hidden]="!onEdit"
+                mat-icon-button
+                (click)="removeSalaryHistoryItem(index)"
+                [disabled]="salaryItemsArray.controls.length === 1"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -153,4 +334,3 @@
     </ng-template>
   </div>
 </div>
-

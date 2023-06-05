@@ -15,7 +15,7 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCardModule} from "@angular/material/card";
 import {registerLocaleData} from '@angular/common';
-import localeFr from '@angular/common/locales/fr'
+import localeFr from '@angular/common/locales/fr';
 import {SearchFiltersComponent} from "./components/search-filters/search-filters.component";
 import {RouterModule} from "@angular/router";
 import {authGuard} from "../shared/guards/auth.guard";
@@ -28,6 +28,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { ModalWindowComponent } from './components/modal-window/modal-window.component';
 import {ListStateSaveService} from "./services/list-state-save.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatSelectModule,
     FormsModule,
     MatCardModule,
+    TranslateModule,
     RouterModule.forChild([
       {path: "", component: UsersListComponent, pathMatch: "full"},
       {path: "create", component: CreateUserComponent, canActivate: [authGuard]},

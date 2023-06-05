@@ -7,7 +7,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {ErrorHandlerModule} from "../error-handler/error-handler.module";
-import {SharedModule} from "../shared/shared.module"
+import {SharedModule} from "../shared/shared.module";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -16,13 +17,15 @@ import {SharedModule} from "../shared/shared.module"
     RegistrationComponent
   ],
   imports: [
-    SharedModule,
+    ErrorHandlerModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    SharedModule,
+    TranslateModule
   ],
   exports:[
     LoginComponent,

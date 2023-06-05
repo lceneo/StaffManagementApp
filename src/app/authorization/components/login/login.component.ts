@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {CustomValidators} from "../../../shared/validators/CustomValidators";
 import {IAuthService, IAuthServiceToken} from "../../../shared/interfaces/IAuthService";
 import {BehaviorSubject} from "rxjs";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -26,8 +27,15 @@ export class LoginComponent implements AfterViewInit{
   (
     @Inject(IAuthServiceToken)
     private authS: IAuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private translate: TranslateService
+  ) {
+    this.translate.get(['en', 'ru'])
+      .subscribe(translations => {
+        console.log(translations['en']);
+        console.log(translations['ru']);
+      });
+  }
 
   public ngAfterViewInit(): void {
         this.formRef.valueChanges?.subscribe(() => {

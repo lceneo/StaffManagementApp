@@ -1,47 +1,73 @@
 <form class="filters" [formGroup]="filtersGroup">
-  <mat-form-field class = "name__input">
-    <input matInput placeholder="Введите имя сотрудника" formControlName = "name">
+  <mat-form-field class="name__input">
+    <input
+      matInput
+      placeholder="{{ 'data.enterEmployeeName' | translate }}"
+      formControlName="name"
+    />
   </mat-form-field>
-  <label>Заработная плата</label>
-  <label>От {{filtersGroup.controls.salaryFrom.value}} До {{filtersGroup.controls.salaryTo.value}}</label>
+  <label>{{ "data.wage" | translate }}</label>
+  <label
+    >{{ "data.from" | translate }} {{ filtersGroup.controls.salaryFrom.value }}
+    {{ "data.to" | translate }}
+    {{ filtersGroup.controls.salaryTo.value }}</label
+  >
   <mat-slider min="1000" max="1000000" step="1000">
-    <input formControlName="salaryFrom" matSliderStartThumb>
-    <input formControlName="salaryTo" matSliderEndThumb>
+    <input formControlName="salaryFrom" matSliderStartThumb />
+    <input formControlName="salaryTo" matSliderEndThumb />
   </mat-slider>
   <mat-form-field appearance="outline">
-    <mat-label>Проект</mat-label>
-    <mat-select formControlName="projectName">
-    </mat-select>
+    <mat-label>{{ "data.project" | translate }}</mat-label>
+    <mat-select formControlName="projectName"> </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <mat-label>Должность</mat-label>
+    <mat-label>{{ "data.jobTitle" | translate }}</mat-label>
     <mat-select formControlName="companyPosition">
-      <mat-option [value]="'Любая'">Любая</mat-option>
-      <mat-option [value]="'Разработчик'">Разработчик</mat-option>
-      <mat-option [value]="'Тестировщик'">Тестировщик</mat-option>
-      <mat-option [value]="'DevOps инженер'">DevOps инженер</mat-option>
-      <mat-option [value]="'Менеджер по подбору персонала'">Менеджер по подбору персонала</mat-option>
-      <mat-option [value]="'Системный администратор'">Системный администратор</mat-option>
-      <mat-option [value]="'Дизайнер'">Дизайнер</mat-option>
+      <mat-option [value]="'Любая'">{{ "data.any" | translate }}</mat-option>
+      <mat-option [value]="'Разработчик'">{{
+        "data.developer" | translate
+      }}</mat-option>
+      <mat-option [value]="'Тестировщик'">{{
+        "data.tester" | translate
+      }}</mat-option>
+      <mat-option [value]="'DevOps инженер'"
+        >DevOps {{ "data.engineer" | translate }}</mat-option
+      >
+      <mat-option [value]="'Менеджер по подбору персонала'"
+        >HR {{ "data.manager" | translate }}</mat-option
+      >
+      <mat-option [value]="'Системный администратор'">{{
+        "data.sysAdmin" | translate
+      }}</mat-option>
+      <mat-option [value]="'Дизайнер'">{{
+        "data.designer" | translate
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <mat-label>Пол</mat-label>
+    <mat-label>{{ "data.sex" | translate }}</mat-label>
     <mat-select formControlName="gender">
-      <mat-option [value]="'Любой'">Любой</mat-option>
-      <mat-option [value]="'Мужской'">Мужской</mat-option>
-      <mat-option [value]="'Женский'">Женский</mat-option>
+      <mat-option [value]="'Любой'">{{ "data.any" | translate }}</mat-option>
+      <mat-option [value]="'Мужской'">{{ "data.male" | translate }}</mat-option>
+      <mat-option [value]="'Женский'">{{
+        "data.female" | translate
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <mat-label>Статус сотрудника</mat-label>
+    <mat-label>{{ "data.employeeStatus" | translate }}</mat-label>
     <mat-select formControlName="fired">
-      <mat-option [value]="false">Действующий</mat-option>
-      <mat-option [value]="true">Уволен</mat-option>
+      <mat-option [value]="false">{{ "data.current" | translate }}</mat-option>
+      <mat-option [value]="true">{{ "data.fired" | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <button [disabled] = "!filtersAreSet()" (click) = "resetFilters()" class = "filters__reset" mat-icon-button
-      matTooltip="Сбросить фильтры">
+  <button
+    [disabled]="!filtersAreSet()"
+    (click)="resetFilters()"
+    class="filters__reset"
+    mat-icon-button
+    matTooltip="Сбросить фильтры"
+  >
     <mat-icon [inline]="true">settings_backup_restore</mat-icon>
   </button>
 </form>

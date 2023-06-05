@@ -1,33 +1,40 @@
-import {inject, NgModule} from '@angular/core';
+import { inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AngularFireModule } from  '@angular/fire/compat'
-import { HttpClientModule } from "@angular/common/http";
+import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from "./enviroments/environment";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AuthorizationModule} from "./authorization/authorization.module";
-import {FbAuthService} from "./shared/services/fb-auth.service";
-import {IAuthServiceToken} from "./shared/interfaces/IAuthService";
-import {MainContentModule} from "./main-content/main-content.module";
-import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
-import {FocusDirective} from "./shared/directives/focus.directive";
+import { AuthorizationModule } from "./authorization/authorization.module";
+import { FbAuthService } from "./shared/services/fb-auth.service";
+import { IAuthServiceToken } from "./shared/interfaces/IAuthService";
+import { MainContentModule } from "./main-content/main-content.module";
+import { ErrorHandlerModule } from "./error-handler/error-handler.module";
+import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { FocusDirective } from "./shared/directives/focus.directive";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import {FormsModule} from "@angular/forms";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {SharedModule} from "./shared/shared.module";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+
+
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     AuthorizationModule,
+    MatSelectModule,
+    ErrorHandlerModule,
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -37,18 +44,20 @@ import {SharedModule} from "./shared/shared.module";
     BrowserAnimationsModule,
     MatSlideToggleModule,
     MatCardModule,
+    MatInputModule,
     FormsModule,
     MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    SharedModule
+    ReactiveFormsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }, useDefaultLang: false
+    })
+
   ],
-  providers: [
-    {
-    provide: IAuthServiceToken,
-    useClass: FbAuthService
-  }
-  ],
+  providers: [],
   exports: [],
   bootstrap: [AppComponent]
 })
@@ -56,7 +65,11 @@ export class AppModule {
   isChecked: boolean = false;
   mode: string = '';
 
-  changed(event: MatSlideToggleChange): void{
+  changed(event: MatSlideToggleChange): void {
     document.body.classList.toggle('darkMode');
   }
- }
+}
+
+export function HttpLoaderFactory(http: HttpClient): TranslateLoader {
+  return new TranslateHttpLoader(http, '../assets/locale/', '.json');
+}
