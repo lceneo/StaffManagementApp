@@ -1,17 +1,30 @@
-.header{
-  &__container{
+.header {
+  &__container {
     padding: 0 40px;
   }
-  &__content{
+
+  &__content {
     display: flex;
 
     justify-content: flex-end;
   }
-  &__toggle{
+
+  &__toggle {
     display: flex;
     gap: 10px;
     height: 48px;
     align-items: center;
     margin: 20px 0 0 0;
+  }
+
+  &__translate-select {
+    width: 120px;
+    border: 2px solid #61b7ad;
+    border-radius: 2px;
+    padding: 0 5px
+  }
+
+  &__translate-option {
+    width: 100px;
   }
 }

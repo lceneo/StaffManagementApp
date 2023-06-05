@@ -2,10 +2,7 @@
   <div class="header__container">
     <div class="header__content">
       <div class="header__toggle">
-        <mat-select (selectionChange)="selectLanguage($event)">
-          <mat-option value="ru">{{ "data.russian" | translate }}</mat-option>
-          <mat-option value="en">{{ "data.english" | translate }}</mat-option>
-        </mat-select>
+       
  
         
         
@@ -15,12 +12,12 @@
           (change)="changed($event)"
           matTooltip="Сменить тему"
         ></mat-slide-toggle>
-        <select (change)="selectLanguage($event)">
-          <option value="ru">{{ "data.russian" | translate }}</option>
-          <option value="en">{{ "data.english" | translate }}</option>
-        </select>
     
-        
+        <mat-select class="header__translate-select" (selectionChange)="selectLanguage($event)" [(value)]="selected" >
+          <mat-select-trigger>{{ selected === "ru" ? "🪆" : "👸"}}{{selected | titlecase}}</mat-select-trigger>
+          <mat-option class="header__translate-option" value="ru">{{ "data.russian" | translate }}</mat-option>
+          <mat-option class="header__translate-option" value="en">{{ "data.english" | translate }}</mat-option>
+        </mat-select>    
       </div>
     </div>
   </div>
