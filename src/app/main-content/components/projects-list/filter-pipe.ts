@@ -14,7 +14,7 @@ export class FilterPipe implements PipeTransform {
     }
     return projects.filter((value) => {
       for (const user of filters.staff){
-        if (value.staff.filter((v: IUser) => v.name === user.name).length === 0){
+        if (value.staff.filter((v: IUser) => v.id === user.id).length === 0){
           return false
         }
       }
