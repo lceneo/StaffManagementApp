@@ -1,0 +1,43 @@
+.add-project{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.3);
+  display: none;
+
+  &.visible{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__form{
+    z-index: 2;
+    width: 25%;
+    max-height: 60%;
+    overflow-y: auto;
+    margin: auto;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: white;
+  }
+
+  &__btn{
+    display: inline-block;
+    margin: 0 auto;
+    height: 50px;
+    width: 50%;
+  }
+
+  &__current-users{
+    padding-left: 20px;
+    margin: -20px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

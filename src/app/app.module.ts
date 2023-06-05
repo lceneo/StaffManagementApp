@@ -15,6 +15,7 @@ import { FocusDirective } from "./shared/directives/focus.directive";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+
 import { FormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -25,6 +26,13 @@ import { MatInputModule } from '@angular/material/input';
 
 
 import { ReactiveFormsModule } from '@angular/forms';
+
+
+import { MatButtonModule } from "@angular/material/button";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { SharedModule } from "./shared/shared.module";
+import { FbDbService } from "./shared/services/fb-db.service";
+
 
 
 @NgModule({

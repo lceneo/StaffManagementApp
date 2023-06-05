@@ -2,13 +2,15 @@ import {ChangeDetectionStrategy, Component, inject, Inject, OnInit,} from '@angu
 import {IUserFilters} from "../../../shared/models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../../../shared/interfaces/IUserDbService";
 import {
-  BehaviorSubject,
+  BehaviorSubject, Observable,
   skipWhile, take,
   tap
 } from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FbEntitiesService} from "../../../shared/services/fb-entities.service";
 import {ListStateSaveService} from "../../services/list-state-save.service";
+import {IProject} from "../../../shared/models/IProject";
+import {ProjectsToken} from "../../../shared/services/fb-db.service";
 
 @Component({
   selector: 'app-users-list',
@@ -32,6 +34,9 @@ export class UsersListComponent implements OnInit{
                                                 }
                                               })
                                             );
+
+  public projects$: Observable<IProject[]> = inject(ProjectsToken);
+
   public currentPage = 1;
   public itemsPerPage = 5;
   public filters$ = new BehaviorSubject<IUserFilters>(null as unknown as IUserFilters);

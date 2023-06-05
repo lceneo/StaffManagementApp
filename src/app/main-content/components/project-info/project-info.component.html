@@ -1,0 +1,12 @@
+<div class="project-info" *ngLet="projectInfo$ | async as project">
+  <mat-icon class="project-info__exit" (click)="redirectToProjects()">keyboard_arrow_left</mat-icon>
+  <h1 class="project-info__title">{{project?.name}}</h1>
+  <p class="project-info__description"><b class="project-info__subtitle">Описание:</b> {{project?.description}}</p>
+  <table class="project-info__staff">
+    <caption class="project-info__caption">Сотрудники:</caption>
+    <tr *ngFor="let companyPos of getCompanyPositions()">
+      <th>{{companyPos}}</th>
+      <td *ngFor="let employee of staff[companyPos]" (click)="redirectToEmployeeInfo(employee.id)">{{employee.surname}} {{employee.name}}</td>
+    </tr>
+  </table>
+</div>

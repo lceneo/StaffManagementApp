@@ -2,12 +2,14 @@ import {inject, Injectable, InjectionToken} from '@angular/core';
 import {AngularFirestore, CollectionReference, Query} from "@angular/fire/compat/firestore";
 import {IUser, IUserFb, Promotion} from "../models/IUser";
 import {IUserDbService, IUserDbServiceToken} from "../interfaces/IUserDbService";
-import {map, Observable} from "rxjs";
+import {map, Observable, startWith} from "rxjs";
 import firebase from "firebase/compat/app";
 // import "firebase/storage"
 import 'firebase/compat/storage'
+import {IProject} from "../models/IProject";
 
 export const UsersToken = new InjectionToken<Observable<IUser[]>>("Error while fetching users");
+export const ProjectsToken = new InjectionToken<Observable<IProject[]>>("Error while fetching projects");
 
 
 export const fbDataTransformationFn = () => {
@@ -33,6 +35,15 @@ export const fbDataTransformationFn = () => {
         return user;
       });
     }));
+}
+
+export const fbProjectsDataTransformationFn = () => {
+  const fbDbService = inject(FbDbService);
+  return fbDbService.getAllProjects$()
+    .pipe(
+      map(res => res.map(e => e.payload.doc.data())),
+      startWith([])
+      );
 }
 
 @Injectable()
@@ -70,5 +81,31 @@ export class FbDbService implements IUserDbService{
 
   public updateUser(user: IUser, newData: Partial<IUser>){
      return this.afs.doc(`/Users/${user.id}`).update(newData);
+  }
+
+  public addProject(project: IProject){
+    const newDocRef = this.afs.collection<IProject>('/Projects').doc().ref;
+    project.id = newDocRef.id;
+    return newDocRef.set(project);
+  }
+
+  public getAllProjects$(){
+    return this.afs.collection<IProject>('/Projects').snapshotChanges();
+  }
+
+  getProjectById$(id: string){
+    return this.afs.collection<IProject>('/Projects', ref => {
+      let query : CollectionReference | Query = ref;
+      query = query.where('id', '==', id);
+      return query;
+    }).snapshotChanges();
+  }
+
+  public deleteProject(id: string){
+    return this.afs.doc(`/Projects/${id}`).delete();
+  }
+
+  public updateProject(projectId: string | undefined, newData: Partial<IProject>){
+    return this.afs.doc(`/Projects/${projectId}`).update(newData);
   }
 }

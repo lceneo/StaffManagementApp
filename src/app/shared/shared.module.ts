@@ -37,7 +37,7 @@ registerLocaleData(localeFr);
     },
     {
       provide: MAT_DATE_LOCALE,
-      useValue: 'en-GB'}
+      useValue: 'en-GB'},
   ]
 })
 export class SharedModule { }

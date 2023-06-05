@@ -1,11 +1,12 @@
 <header class="header">
   <div class="header__container">
+    <nav class="navigation">
+      <a class="navigation__link" routerLink="projects" routerLinkActive="active">Проекты</a>
+      <a class="navigation__link" routerLink="users" routerLinkActive="active">Сотрудники</a>
+    </nav>
     <div class="header__content">
-      <div class="header__toggle">
+      <div class="header__toggle">        
        
- 
-        
-        
         <mat-icon>{{ mode }}</mat-icon>
         <mat-slide-toggle
           [(ngModel)]="isChecked"

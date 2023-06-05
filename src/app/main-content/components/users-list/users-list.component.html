@@ -1,101 +1,47 @@
-<ng-container class="container" *ngLet="users$ | async as users">
-  <mat-spinner
-    class="spinner"
-    *ngIf="isLoading$ | async; else usersTemplate"
-  ></mat-spinner>
 
-  <ng-template #usersTemplate>
-    <section class="users">
+<ng-container class="container" *ngLet="users$ | async as users">
+
+  <mat-spinner class="spinner" *ngIf="isLoading$ | async; else usersTemplate"></mat-spinner>
+
+<ng-template #usersTemplate>
+    <section class="users" *ngLet="projects$ | async as projects">
       <div class="wrapper">
         <div class="users__info" *ngLet="filters$ | async as searchFilters">
-          <button
-            class="users__addBtn"
-            mat-icon-button
-            (click)="openCreateUserDialog()"
-            matTooltip="{{ 'data.addEmployee' | translate }}"
-          >
+          <button class="users__addBtn" mat-icon-button (click) = "openCreateUserDialog()"
+            matTooltip="{{ 'data.wage' | translate }}">
             <mat-icon>add</mat-icon>
           </button>
-          <ul
-            class="users__list"
-            *ngLet="users | searchFilter : searchFilters as filteredUsers"
-          >
-            <li
-              class="users__item"
-              *ngFor="
-                let user of filteredUsers
-                  | searchFilter : searchFilters
-                  | paginate
-                    : { itemsPerPage: itemsPerPage, currentPage: currentPage }
-              "
-            >
-              <mat-card
-                class="users__card"
-                [ngClass]="{
-                  'users__card-successfulWorker':
-                    user.lastPromotion === 'Успешный',
-                  'users__card-unsuccessfulWorker':
-                    user.lastPromotion === 'Неуспешный'
-                }"
-              >
-                <mat-card-header>
-                  <mat-card-title-group>
-                    <mat-card-title
-                      >{{ user.surname }} {{ user.name }}
-                      {{ user.patronic }}</mat-card-title
-                    >
-                    <mat-card-subtitle>{{
-                      user.companyPosition
-                    }}</mat-card-subtitle>
-                  </mat-card-title-group>
-                </mat-card-header>
-                <mat-card-content class="matCardContent">
-                  <div>
-                    <p>
-                      <span>{{ "data.project" | translate }}:</span>
-                      {{ user.projectName }}
-                    </p>
-                    <p>
-                      <span>{{ "data.age" | translate }}:</span> {{ user.age }}
-                    </p>
-                    <p>
-                      <span>{{ "data.sex" | translate }}:</span>
-                      {{ user.gender }}
-                    </p>
-                    <p>
-                      <span>{{ "data.wage" | translate }}:</span>
-                      {{ user.salary | currency : "RUB" }}
-                    </p>
-                  </div>
-                  <img
-                    class="users__img"
-                    mat-card-xl-image
-                    [src]="user.img ?? 'assets/img/temporary-user.PNG'"
-                    alt="Employee photo"
-                  />
-                </mat-card-content>
-                <a
-                  class="users__link"
-                  (click)="openUserDetailedInfo(user.id!)"
-                  >{{ "data.goToProfile" | translate }}</a
-                >
-              </mat-card>
-            </li>
+          <ul class="users__list" *ngLet="users | searchFilter: searchFilters : projects  as filteredUsers">
+              <li class="users__item" *ngFor="let user of filteredUsers
+               | paginate: {itemsPerPage: itemsPerPage, currentPage: currentPage}">
+                <mat-card class="users__card" [ngClass]="{
+                   'users__card-successfulWorker': user.lastPromotion === 'Успешный',
+                   'users__card-unsuccessfulWorker': user.lastPromotion === 'Неуспешный'
+                }">
+                  <mat-card-header>
+                    <mat-card-title-group>
+                      <mat-card-title>{{user.surname}} {{user.name}} {{user.patronic}}</mat-card-title>
+                      <mat-card-subtitle>{{user.companyPosition}}</mat-card-subtitle>
+                    </mat-card-title-group>
+                  </mat-card-header>
+                  <mat-card-content class="matCardContent">
+                    <div>
+                      <p><span>{{ "data.project" | translate }}:</span> {{user | userProjects : projects}}</p>
+                      <p><span>{{ "data.age" | translate }}:</span> {{user.age}}</p>
+                      <p><span>{{ "data.sex" | translate }}:</span> {{user.gender}}</p>
+                      <p><span>{{ "data.wage" | translate }}:</span> {{user.salary | currency: "RUB" }}</p>
+                    </div>
+                    <img class="users__img" mat-card-xl-image [src]="user.img ?? 'assets/img/temporary-user.png'" alt="Employee photo">
+                  </mat-card-content>
+                  <a class="users__link" (click) = "openUserDetailedInfo(user.id!)">{{ "data.goToProfile" | translate }}</a>
+                </mat-card>
+              </li>
           </ul>
         </div>
-        <app-search-filters
-          class="users__filters"
-          [savedFilters]="savedFilters"
-          (filters$)="updateFilter($event)"
-        ></app-search-filters>
+        <app-search-filters class="users__filters" [savedFilters]="savedFilters" (filters$)="updateFilter($event)"></app-search-filters>
       </div>
-      <pagination-controls
-        class="users__paginator"
-        (pageChange)="changePage($event)"
-        previousLabel=""
-        nextLabel=""
-      >
+      <pagination-controls class="users__paginator" (pageChange)="changePage($event)" previousLabel = "" nextLabel= "">
       </pagination-controls>
     </section>
-  </ng-template>
+</ng-template>
 </ng-container>

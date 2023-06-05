@@ -17,8 +17,16 @@
     <input formControlName="salaryTo" matSliderEndThumb />
   </mat-slider>
   <mat-form-field appearance="outline">
+
     <mat-label>{{ "data.project" | translate }}</mat-label>
-    <mat-select formControlName="projectName"> </mat-select>
+   
+
+    <!-- <mat-label>Проект</mat-label> -->
+    <mat-select formControlName="projectName">
+      <mat-option [value]="'Любой'">Любой</mat-option>
+      <mat-option *ngFor = "let project of projects$ | async" [value]="project.id">{{project.name}}</mat-option>
+    </mat-select>
+
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>{{ "data.jobTitle" | translate }}</mat-label>
@@ -66,7 +74,7 @@
     (click)="resetFilters()"
     class="filters__reset"
     mat-icon-button
-    matTooltip="Сбросить фильтры"
+    matTooltip="{{'data.resetFilters' | translate }}"
   >
     <mat-icon [inline]="true">settings_backup_restore</mat-icon>
   </button>

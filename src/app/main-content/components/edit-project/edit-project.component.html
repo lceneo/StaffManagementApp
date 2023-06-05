@@ -1,0 +1,23 @@
+<div class="add-project" [ngClass]="{'visible': isVisible}" (click)="closePopUp()">
+  <form class="add-project__form" [formGroup]="form" (ngSubmit)="onSubmit()" (click)="$event.stopPropagation()">
+    <mat-form-field>
+      <input matInput type="text" placeholder="Введите название проекта..." formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Введите описание проекта..." formControlName="description">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-card-subtitle>Добавьте сотрудников в проект</mat-card-subtitle>
+      <mat-select multiple formControlName="staff">
+        <mat-option *ngFor="let user of users$ | async" [value]="user" [disabled]="isDisabledOption(user)">{{user.surname}} {{user.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ol class="add-project__current-users">
+      <li *ngFor="let user of projectToUpdate?.value?.staff">
+        {{user.surname}}  {{user.name}}
+        <button (click)="deleteUser(user.id)" [disabled]="projectToUpdate?.value?.staff?.length === 1">x</button>
+      </li>
+    </ol>
+    <button mat-raised-button type="submit" class="add-project__btn" [disabled]="form.invalid">Редактировать проект</button>
+  </form>
+</div>

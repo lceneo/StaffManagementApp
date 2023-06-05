@@ -35,6 +35,7 @@
         "enterDate": "Enter date",
         "delete": "Delete",
         "addEmployee": "Add employee",
-        "historyWage": "History wage"
+        "historyWage": "History wage",
+        "resetFilters": "Reset filters"
     }
 }

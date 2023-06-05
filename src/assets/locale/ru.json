@@ -35,6 +35,7 @@
         "enterDate": "Укажите дату",
         "delete": "Удалить",
         "addEmployee": "Добавить сотрудника",
-        "historyWage": "История зарплаты"
+        "historyWage": "История зарплаты",
+        "resetFilters": "Сбросить фильтры"
     }
 }
