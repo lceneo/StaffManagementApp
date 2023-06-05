@@ -15,7 +15,7 @@
 <a name = start></a>
 ## Как запустить проект?
 1-ый способ:
-  1. Перейти по ссылке *вставить ссылку* (сайт выложен на хостинг)
+  1. Перейти по [ссылке](https://647e2549af33ac0384e1ce67--harmonious-sunshine-17a661.netlify.app/)  (сайт выложен на хостинг)
   
 2-ой способ:
   1. Установить Angular (Открыть терминал и прописать npm install -g @angular/cli)
@@ -24,6 +24,11 @@
   ![image](https://github.com/lceneo/StaffManagementApp/assets/94864786/f14a3dad-17d3-423e-885b-34d2f648038a)
   4. Прописать в терминале npm start
 
+ Данные для входа:
+ admin@mail.ru
+ 123456
+ (можно зарегать и новый акк)
+  
 <a name = stack></a>  
 ## Stack-технологий
 - Приложение написано на Angular
