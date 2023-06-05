@@ -1,4 +1,4 @@
-<div class="add-project" [ngClass]="{'visible': isVisible}" (click)="closePopUp()">
+<div class="add-project" [ngClass]="{'visible': isVisible}" (click)="closePopUp()" *ngLet="users$ | async as users">
   <form class="add-project__form" [formGroup]="form" (ngSubmit)="onSubmit()" (click)="$event.stopPropagation()">
     <mat-form-field>
       <input matInput type="text" placeholder="Введите название проекта..." formControlName="name">
@@ -9,13 +9,13 @@
     <mat-form-field>
       <mat-card-subtitle>Добавьте сотрудников в проект</mat-card-subtitle>
       <mat-select multiple formControlName="staff">
-        <mat-option *ngFor="let user of users$ | async" [value]="user" [disabled]="isDisabledOption(user)">{{user.surname}} {{user.name}}</mat-option>
+        <mat-option *ngFor="let user of users" [value]="user" [disabled]="isDisabledOption(user)">{{user.surname}} {{user.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <ol class="add-project__current-users">
-      <li *ngFor="let user of projectToUpdate?.value?.staff">
+      <li *ngFor="let user of (projectToUpdate?.value) | currentStaff: users">
         {{user.surname}}  {{user.name}}
-        <button (click)="deleteUser(user.id)" [disabled]="projectToUpdate?.value?.staff?.length === 1">x</button>
+        <button mat-icon-button (click)="deleteUser(user.id)" [disabled]="projectToUpdate?.value?.staff?.length === 1"><mat-icon>delete</mat-icon></button>
       </li>
     </ol>
     <button mat-raised-button type="submit" class="add-project__btn" [disabled]="form.invalid">Редактировать проект</button>

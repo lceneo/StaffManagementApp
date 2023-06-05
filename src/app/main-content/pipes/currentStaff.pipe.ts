@@ -6,7 +6,9 @@ import {IUser} from "../../shared/models/IUser";
   name: 'currentStaff'
 })
 export class CurrentStaffPipe implements PipeTransform {
-  transform(project: IProject, staffState: IUser[]): IUser[] {
+  transform(project: IProject | null | undefined, staffState: IUser[]): IUser[] {
+    if(!project)
+      return [];
     return staffState.filter(staff => project.staff.some(s => staff.id === s.id));
   }
 }
